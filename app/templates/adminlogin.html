@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </head> 
+<style>
+body {
+background-image: url("{{url_for('static', filename = 'signupbg.jpg')}}");
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-size: 100% 100%;
+}
+.admin-page {
+    margin: 15% auto;
+    width: 360px;
+}
+.logo {
+    color:white;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+.logo-lg {
+    font-size: 28px !important;
+}
+.user-thumb img {
+    height: 88px;
+    width: 88px;
+}
+</style>
+<header>
+  <nav class="navbar" style="height: 50px;">
+    <ul><a class="navbar-brand" href="/" style="color: white;font-size:20; font-family: Arial, Helvetica, sans-serif;"><strong><h2><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}">P A N I M A L A Y</h2></strong></a></ul>
+  </nav> 
+</header>
+
+<div class="admin-page">
+    <form method="post" action="#" role="form" class="text-center m-t-30">
+        <div class="user-thumb">
+            <img src="{{url_for('static', filename = 'mersan.jpg')}}" class="img-circle img-thumbnail">
+        </div>
+        <div class="form-group">
+            <h3><b>Mersan Canonigo</b></h3>
+            <p class="text-muted">Enter your password to access the admin.</p>
+            <div class="input-group m-t-30">
+                <input type="password" class="form-control" placeholder="Password">
+                <span class="input-group-btn" style="color: white;"> <button type="submit" class="btn" style="background-color: #4A707A;">
+                    Log In
+                </button> </span>
+            </div>
+        </div>
+        <!--not necessary-->
+        <!--<div class="text-right">
+            <a href="#" class="text-muted">Not Mersan Canonigo?</a>
+        </div>-->
+    </form>
+</div>
+
+</html>

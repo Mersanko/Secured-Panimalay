@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  </head>
+
+<style>
+body {
+  background-color: #94B0B7;
+}
+.navbar-dark .navbar-nav .nav-link {
+  color: white;
+  font-size: 1.7rem;
+}
+.search-form {
+  width: 80%;
+  margin: 0 auto;
+}
+.search-form input {
+  border: 0;
+  padding: 1rem;
+  height: 100%;
+}
+.search-form button {
+  height: 100%;
+  width: 100%;
+  font-size: 1rem;
+}
+p {
+  color: white;
+  text-align: left;
+  margin-bottom: 0;
+}
+</style>
+<!--End of style-->
+
+<body>
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<nav class="navbar navbar-dark">
+    <div class="container">
+        <a href="#" class="navbar-brand" style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N I M A L A Y</strong></a>		
+        <ul class="navbar-nav" style="margin-right: -10%;">
+            <a href="adminlogin" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
+        </ul>
+    </div>
+</nav>
+<!--End of navbar-->
+
+<div class="container" style="margin-bottom: 1%;">
+<div class="row">
+    <div class="col-lg-12 card-margin">
+        <div class="card search-form">
+            <div class="card-body p-0">
+                <form id="search-form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row no-gutters">
+                                <div class="col">
+                                    <input type="text" placeholder="Search..." class="form-control" id="search" name="search">
+                                </div>
+                                <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn btn-base">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!--End of search form-->
+
+<div class="container" style="text-align: right;">
+  <div class="row justify-content-center" style="background-color: black; height: 600px; overflow: auto;">
+    <div class="card-body">
+      <p>mary angel manginsay <span style="color: green;">maryangel@gmail.com</span> <span style="color: yellow;">payment</span> <span style="color: red;">PHP 1,500</span> <span style="color: blue;">may 4, 2021 @10:00 pm</span></p>
+      <p>mary angel manginsay <span style="color: green;">maryangel@gmail.com</span> <span style="color: yellow;">payment</span> <span style="color: red;">PHP 1,500</span> <span style="color: blue;">may 4, 2021 @10:00 pm</span></p>
+      <p>mary angel manginsay <span style="color: green;">maryangel@gmail.com</span> <span style="color: yellow;">payment</span> <span style="color: red;">PHP 1,500</span> <span style="color: blue;">may 4, 2021 @10:00 pm</span></p>
+      <p>mary angel manginsay <span style="color: green;">maryangel@gmail.com</span> <span style="color: yellow;">payment</span> <span style="color: red;">PHP 1,500</span> <span style="color: blue;">may 4, 2021 @10:00 pm</span></p>
+    </div>
+  </div>
+  <div class="" style="margin-top: 2%; margin-right: -1%;">
+    <a href="admindashboard"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black;"><i class="fa fa-arrow-left" style="margin-right: 3%;"></i>Go back to dashboard</button></a>
+  </div>
+</div>
+<!--End of Logs-->
+</body>
+</html>
