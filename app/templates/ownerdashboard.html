@@ -54,11 +54,12 @@
   </nav>
   <!--End of navbar-->
 
+
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
   <div id="page-wrapper" class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h1>Owner</h1>
+        <h1>Welcome {{accountInfo.4}} {{accountInfo.5}} !</h1>
         <ol class="breadcrumb">
           <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
         </ol>
@@ -66,6 +67,21 @@
     </div>
   </div>
   <!--End of dashboard-->
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category,message in messages %}
+    <div id="flashMessage" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      <strong>{{ message }}</strong>
+      <button id="closeFlashMessage" type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
 
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <div class="container">
@@ -106,9 +122,28 @@
           </div>
         </div>
       </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="card bg-pattern">
+          <div class="card-body">
+            <div class="float-right">
+              <i class="fa fa-users text-primary h4 ml-3"></i>
+            </div>
+            <a href="{{url_for('manageTenants')}}">
+              <p class="text-muted mb-0">Tenants List</p>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <!-- End of dashboard -->
 </body>
+<script>
+  $(document).ready(function () {
+    $('#closeFlashMessage').click(function () {
+      $("#flashMessage").hide();
+    })
+  });
+</script>
 
 </html>

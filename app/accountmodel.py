@@ -30,8 +30,7 @@ class account():
         cur = mysql.connection.cursor()
         cur.execute('''SELECT * FROM (SELECT accounts.userID,accounts.username,AES_DECRYPT(accounts.password,UNHEX(SHA2('kumsainibai',512))),accounts.accountType,profiles.firstName,profiles.lastName,profiles.birthdate,profiles.gender,contacts.email,contacts.phoneNumber
                         FROM accounts, profiles, contacts
-                        WHERE accounts.userID = profiles.profileID AND profiles.profileID = contacts.contactID) AS accountInfo
-                        ''')
+                        WHERE accounts.userID = profiles.profileID AND profiles.profileID = contacts.contactID) AS accountInfo WHERE username=%s or email=%s''',(usernameOrEmail,usernameOrEmail))
         data = cur.fetchall()
         #validate login credentials
         for i in data:
@@ -50,7 +49,7 @@ class account():
                         accountInfo.append(splitDate)
                         m+=1
                     else:
-                        print(x)
+
                         accountInfo.append(x)
                         m+=1
                 return accountInfo

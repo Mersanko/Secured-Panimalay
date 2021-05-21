@@ -50,37 +50,40 @@
     </nav>
 </header>
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container pb-5 mb-sm-5" style="margin-top: 100px;">
-    <div class="row pt-5 justify-content-center">
-        <div class="col-md-6 pt-sm-3" style="margin-top: 130px;">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="h4 mb-1">Sign in</h2>
-                    <hr>
-                    <form class="needs-validation" novalidate="" action="{{url_for('login')}}" method="POST">
-                        <div class="input-group form-group">
-                            <div class="input-group-prepend"><span class="input-group-text"><i
-                                        class="fa fa-user fa-lg"></i></span></div>
-                            <input class="form-control" type="username" placeholder="username or email" required="1"
-                                id="usernameOrEmail" name="usernameOrEmail">
-                            <div class="invalid-feedback">Please enter valid username!</div>
-                        </div>
-                        <div class="input-group form-group">
-                            <div class="input-group-prepend"><span class="input-group-text"><i
-                                        class="fa fa-lock fa-lg"></i></span></div>
-                            <input class="form-control" type="password" placeholder="password" required="1"
-                                name="password" id="password">
-                            <div class="invalid-feedback">Please enter valid password!</div>
-                        </div>
-                        <hr class="mt-2">
-                        <div class="text-right pt-4">
-                            <button class="btn" type="submit" style="background-color: #4A707A; color: white;">Sign
-                                In</button>
-                        </div>
-                    </form>
+<body>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container pb-5 mb-sm-5" style="margin-top: 100px;">
+        <div class="row pt-5 justify-content-center">
+            <div class="col-md-6 pt-sm-3" style="margin-top: 130px;">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h4 mb-1">Sign in</h2>
+                        <hr>
+                        <form action="{{url_for('login')}}" method="POST">
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="fa fa-user fa-lg"></i></span></div>
+                                <input class="form-control" type="text" placeholder="username or email"
+                                    id="usernameOrEmail" name="usernameOrEmail" required="1">
+                                <div class="invalid-feedback">Please enter valid username!</div>
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="fa fa-lock fa-lg"></i></span></div>
+                                <input class="form-control" type="password" placeholder="password" name="password"
+                                    id="password" required="1">
+                                <div class="invalid-feedback">Please enter valid password!</div>
+                            </div>
+                            <hr class="mt-2">
+                            <div class="text-right pt-4">
+                                <button class="btn" type="submit" style="background-color: #4A707A; color: white;">Sign
+                                    In</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
