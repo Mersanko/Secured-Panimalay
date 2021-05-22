@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+            $(function() {
+                $('a#process_input').bind('click', function() {
+                $.getJSON('/search/units', {
+                    location: $('input[name="location"]').val(),
+                    rent: $('input[name="rent"]').val(),
+                    capacity: $('input[name="capacity"]').val(),
+                    genderAccommodation: $('input[name="genderAccommodation"]').val(),
+                }, function(data) {
+                    $('#resultTable > tbody').empty();
+                    var result = data.result;
+                    $.each( result, function( index, value ){
+                        $('#resultTable').append("<tr>"+"<td>"+ value[7] +"</td>" + "<td>"+ value[8]+","+value[9]+","+value[10]+","+value[11] +"</td>"+"<td>"+ value[3] +"</td>"+ "<td>"+ value[5] +"</td>"+ "<td>"+ value[4] +"</td>"+ "<td>"+"<a href='"+'http://127.0.0.1:5000/rent/request/'+value[1]+"' class='btn btn-success'>Rent</a><a href='"+'http://127.0.0.1:5000/view/unit/'+value[1]+"' class='btn btn-primary' style='margin-left:20px;'>View</button>"+"</td>"+"<tr>");
+                    });
+                
+                    
+                  
+
+                });
+                return false;
+                });
+            });
+           
+        </script>
+</head>
+
+<style>
+    body {
+        background-color: #94B0B7;
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: white;
+        font-size: 1.7rem;
+    }
+
+    .card {
+        border: none;
+        margin-bottom: 24px;
+        -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+        box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+    }
+
+    /*search box css starts here*/
+    .search-sec {
+        background: #4A707A;
+        padding: 1rem;
+    }
+
+    .search-slt {
+        font-size: 0.875rem;
+        background-color: white;
+        height: calc(3rem + 2px) !important;
+        border-radius: 0;
+    }
+
+    .wrn-btn {
+        width: 100%;
+        height: calc(3rem + 2px) !important;
+        border-radius: 0;
+    }
+
+    .col {
+        padding: 0px;
+    }
+</style>
+<!--End of style-->
+
+<body>
+    <!--Navbar-->
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a href="#" class="navbar-brand"
+                style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img
+                        src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N
+                    I M A L A Y</strong></a>
+            <ul class="navbar-nav" style="margin-right: -10%;">
+                <a href="{{url_for('logout')}}" class="nav-link" style="font-size: 18px;">Logout <i
+                        class="fa fa-sign-out"></i></a>
+            </ul>
+        </div>
+    </nav>
+    <!--End of navbar-->
+
+    <!--Dashboard-->
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <div id="page-wrapper" class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Welcome {{accountInfo.4}} {{accountInfo.5}}!</h1>
+                <ol class="breadcrumb">
+                    <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
+                </ol>
+                <!--Features in dasboard-->
+                <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+                    rel="stylesheet">
+                <div class="container" style="margin-left: 10%;">
+                    <div class="row">
+                        <div class="col-xl-2 col-md-6">
+                            <div class="card bg-pattern">
+                                <div class="card-body">
+                                    <div class="float-right">
+                                        <i class="fa fa-user text-primary h4 ml-3"></i>
+                                    </div>
+                                    <a href="{{url_for('accountInfo')}}">
+                                        <p class="text-muted mb-0">Account</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6">
+                            <div class="card bg-pattern">
+                                <div class="card-body">
+                                    <div class="float-right">
+                                        <i class="fa fa-database text-primary h4 ml-3"></i>
+                                    </div>
+                                    <a href="{{url_for('renterPaymentsList')}}">
+                                        <p class="text-muted mb-0">Payments</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6">
+                            <div class="card bg-pattern">
+                                <div class="card-body">
+                                    <div class="float-right">
+                                        <i class="fa fa-home text-primary h4 ml-3"></i>
+                                    </div>
+                                    <a href="http://127.0.0.1:5000/renter/pending/reservation">
+                                        <p class="text-muted mb-0">Reservation</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6">
+                            <div class="card bg-pattern">
+                                <div class="card-body">
+                                    <div class="float-right">
+                                        <i class="fa fa-home text-primary h4 ml-3"></i>
+                                    </div>
+                                    <a href="{{url_for('rentedUnit')}}">
+                                        <p class="text-muted mb-0">Rented Unit</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-6">
+                            <div class="card bg-pattern">
+                                <div class="card-body">
+                                    <div class="float-right">
+                                        <i class="fa fa-lock text-primary h4 ml-3"></i>
+                                    </div>
+                                    <a href="{{url_for('renterPrivacy')}}">
+                                        <p class="text-muted mb-0">Privacy</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End of features in dashboard -->
+                <div id="flashMessage" class="container">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category,message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" id="closeFlashMessage" class="close" data-dismiss="alert"
+                            aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <!--Search bar-->
+                <section class="search-sec">
+                    <div class="container">
+                        <form>
+                            <div class="row">
+                                <div class="col-4" style="padding: 0;">
+                                    <input type="text" class="form-control search-slt" name="location" id="location"
+                                        placeholder="Where do you want to stay?" required="1">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control search-slt" name="rent" id="rent"
+                                        placeholder="Rent" min="1" required="1">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control search-slt" name="capacity" id="capacity"
+                                        placeholder="No. of Renter" min="1" required="1">
+                                </div>
+                                <div class="col-3" style="padding: 0;">
+                                    <select class="form-control search-slt" id="genderAccommodation"
+                                        name="genderAccommodation" required="1">
+                                        <option disabled selected>Gender Accomodation</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <a href="#" id="process_input" name="process_input"><button type="submit"
+                                            class="btn wrn-btn" style="background-color: #C2C8C5;">Search</button></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                <br>
+                <!--End of search bar-->
+                <!--Start of table-->
+                <p id="result" name="result"></p>
+                <table id="resultTable" name="resultTable" class="table table-hover">
+                    <thead class="thead-dark">
+                        <th>Boarding House Name</th>
+                        <th>Location</th>
+                        <th>Rent</th>
+                        <th>Gender Accommodation</th>
+                        <th>Capacity</th>
+                        <th style="margin-top:50px;">Action <i id="closeTable" name="closeTable" style="float:right;"
+                                class="fa fa-close text-primary h4 ml-3"></i></th>
+
+                    </thead>
+
+                </table>
+                <!--End of Table-->
+            </div>
+        </div>
+    </div>
+    <!--End of dashboard-->
+
+
+</body>
+<script>
+    $(document).ready(function () {
+        var units = [];
+        $("#resultTable").hide();
+        $('#closeFlashMessage').click(function () {
+            $("#flashMessage").hide();
+        })
+        $('#process_input').click(function () {
+            $("#resultTable").hide();
+            $("#resultTable").show();
+        })
+        $("#closeTable").click(function () {
+            $("#resultTable").hide();
+        })
+    });
+</script>
+
+
+</html>

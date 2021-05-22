@@ -120,7 +120,7 @@
                             <div class="user-box">
                                 <img src="{{url_for('static', filename = 'mersan.jpg')}}" alt="user avatar">
                             </div>
-                            <h5 class="mb-1 text-white">Mersan Canonigo</h5>
+                            <h5 class="mb-1 text-white">{{data.4}} {{data.5}}</h5>
                             <h6 class="text-light">@{{data.1}}</h6>
                         </div>
                         <div class="card-body">
@@ -261,7 +261,7 @@
                                         <div class="col-lg-9">
                                             <input class="form-control" type="password" id="oldPass" name="oldPass"
                                                 placeholder="Enter Old Password" required="1"><span toggle="#oldPass"
-                                                class="fa fa-eye field-icon toggle-password"></span>
+                                                class="fa fa-eye field-icon toggle-firstname"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -269,7 +269,7 @@
                                         <div class="col-lg-9">
                                             <input class="form-control" type="password" id="newPass" name="newPass"
                                                 value="" placeholder="Enter New Password" required="1"><span
-                                                toggle="#newPass" class="fa fa-eye field-icon toggle-password"></span>
+                                                toggle="#newPass" class="fa fa-eye field-icon toggle-firstname"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -294,7 +294,7 @@
     </div>
     <!--Toggle script-->
     <script>
-        $(".toggle-password").click(function () {
+        $(".toggle-firstname").click(function () {
 
             $(this).toggleClass("fa-eye fa-eye-slash");
             var input = $($(this).attr("toggle"));

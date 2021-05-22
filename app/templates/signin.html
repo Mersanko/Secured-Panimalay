@@ -38,6 +38,12 @@
         background-color: #fff;
         border: 1px solid #e1e1e1;
     }
+    .field-icon {
+        float: left;
+        margin-top: 2%;
+        margin-right: 2%;
+        margin-left: -5%;
+    }
 </style>
 <header>
     <nav class="navbar" style="height: 50px;">
@@ -71,10 +77,12 @@
                             <div class="input-group form-group">
                                 <div class="input-group-prepend"><span class="input-group-text"><i
                                             class="fa fa-lock fa-lg"></i></span></div>
-                                <input class="form-control" type="password" placeholder="password" name="password"
-                                    id="password" required="1">
+                                <input class="form-control" type="password" id="password" name="password"
+                                value="" placeholder="Enter New Password" required="1"><span 
+                                toggle="#password" class="fa fa-eye field-icon toggle-password"></span>
                                 <div class="invalid-feedback">Please enter valid password!</div>
                             </div>
+                            
                             <hr class="mt-2">
                             <div class="text-right pt-4">
                                 <button class="btn" type="submit" style="background-color: #4A707A; color: white;">Sign
@@ -87,3 +95,18 @@
         </div>
     </div>
 </body>
+    <!--Toggle script-->
+    <script>
+        $(".toggle-password").click(function () {
+
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    </script>
+    <!--Toggle script-->
+</html>

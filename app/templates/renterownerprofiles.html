@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  </head>
+
+<style>
+body {
+background-color: #94B0B7;
+}
+.navbar-dark .navbar-nav .nav-link {
+color: white;
+font-size: 1.7rem;
+}
+/* User Profile */
+.user-profile-avatar,
+.user-avatar {
+  padding: 20px;
+}
+.user-profile-avatar > img,
+.user-avatar > img {
+  margin-bottom: 10px;
+}
+.user-profile-info {
+  margin: 20px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.user-profile-info > li .fa {
+  margin-right: 10px;
+}
+.user-profile-tabs {
+  margin-top: 40px;
+}
+.boardinghouse {
+  margin-bottom: 20px;
+}
+.boardinghouse-img {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.boardinghouse-img:hover .boardinghouse-mask {
+  background: rgba(255, 255, 255, 0.9);
+}
+.boardinghouse-img:hover .boardinghouse-mask-content {
+  top: 0;
+}
+.boardinghouse-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transition: background .3s;
+       -o-transition: background .3s;
+          transition: background .3s;
+}
+.boardinghouse-mask-content {
+  position: absolute;
+  top: -100%;
+  padding: 40px 20px;
+  color: black;
+  text-decoration: none;
+  -webkit-transition: top .3s;
+       -o-transition: top .3s;
+          transition: top .3s;
+}
+.boardinghouse-mask-content-title {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.boardinghouse-mask-info {
+  font-size: 12px;
+}
+.tab-pane {
+    padding-top: 20px;
+}
+</style>
+<!--End of style-->
+
+<body>
+<!--Navbar-->
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<nav class="navbar navbar-dark">
+<div class="container">
+    <a href="#" class="navbar-brand" style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N I M A L A Y</strong></a>		
+    <ul class="navbar-nav" style="margin-right: -10%;">
+        <a href="adminlogin" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
+    </ul>
+</div>
+</nav>
+<!--End of navbar-->
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+    <div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="user-profile-avatar shadow-effect text-center">
+                    <img class="img-fluid mx-auto" src="{{url_for('static', filename = 'mersan.jpg')}}" style="border-radius: 50%; margin-top: -15%;">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- User name -->
+                    <h3 class="user-profile-name"><b>Mersan Canonigo</b></h3>
+                <!-- User description -->
+                <ul class="user-profile-info">
+                    <li> <i class="fa fa-venus-mars"></i>Male</li>
+                    <li> <i class="fa fa-phone"></i>09675188574</li>
+                    <li> <i class="fa fa-envelope"></i>mersancanonigo@gmail.com</li>
+                </ul>
+            </div>
+            <div class="col-md-12">
+                <div class="user-profile-tabs">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="tab" class="active nav-item"><a href="" aria-controls="user-profile" data-toggle="tab" class="nav-link active show">My Boarding House</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content-active">
+                        <div role="tabpanel" class="tab-pane fade active show" id="user-profile">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6 col-xl-4">
+                                    <div class="boardinghouse">
+                                        <div class="boardinghouse-img"> 
+                                            <a href="">
+                                            <img src="{{url_for('static', filename = 'signupbg.jpg')}}" class="img-fluid">
+                                            <div class="boardinghouse-mask">
+                                                <div class="boardinghouse-mask-content">
+                                                <div class="boardinghouse-mask-content-title">Blue House</div>
+                                                <div class="boardinghouse-mask-info">PHP 1,500 per month</div>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="float-right" style="margin-top: 2%;">
+            <a href="renterpayments"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left" style="margin-right: 5%;"></i>Go back to Payments</button></a>
+        </div> 
+    </div>
+    </div>
+</div>
+
+</body>
+</html>

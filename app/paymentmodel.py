@@ -22,3 +22,18 @@ class payment():
         else:
             data = []
             return data
+    
+    @classmethod
+    def renterPayments(cls,userID):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT * FROM(SELECT payments.paymentNo,payments.userID,payments.bhID,boardinghouses.boardingHouseName,payments.amount,payments.paymentDate,profiles.firstName,profiles.lastName
+		    FROM payments,profiles,boardinghouses
+		    WHERE payments.userID=profiles.profileID AND payments.bhID=boardinghouses.BHID) AS renterPayments
+		    WHERE userID=%s''',(userID,))
+        data = cur.fetchall()
+        if data!=None:
+            return data
+        else:
+            data = []
+            return data
+        

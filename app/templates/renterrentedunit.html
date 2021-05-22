@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</head>
+
+<style>
+    body {
+        background-color: #94B0B7;
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: white;
+        font-size: 1.7rem;
+    }
+
+    .card {
+        border: none;
+        margin-bottom: 24px;
+        -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+        box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+    }
+
+    .avatar {
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .text-fade {
+        color: rgba(77, 82, 89, 0.7) !important;
+    }
+
+    .flexbox {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .card-footer {
+        background-color: white;
+        border-top: 1px solid rgba(77, 82, 89, 0.07);
+        color: #8b95a5;
+        padding: 10px 20px
+    }
+</style>
+<!--End of style-->
+
+<body>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a href="{{url_for('dashboard')}}" class="navbar-brand"
+                style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img
+                        src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N
+                    I M A L A
+                    Y </strong></a>
+            <ul class="navbar-nav" style="margin-right: -10%;">
+                <a href="{{url_for('logout')}}" class="nav-link" style="font-size: 18px;">Logout <i
+                        class="fa fa-sign-out"></i></a>
+            </ul>
+        </div>
+    </nav>
+    <!--End of navbar-->
+
+    <div class="container">
+        
+        {% if info|length==0 %}
+        <h3>No rented unit at the moment.</h3>
+        {% else %}
+        <div style="background-color: white;padding-bottom: 5% ;border-color: black;">
+        <br>
+        <div class="container" style="margin-left: 2%;margin-right: -10%;">
+            
+            {% if info.0.4 == "S" %}
+            <form id="requestToLeaveForm" name="requestToLeaveForm" action="http://127.0.0.1:5000/renter/rented/unit/request/to/leave/{{info.0.0}}/{{info.0.1}}" method="POST">
+            <span>
+            <button type="submit" class="btn btn-primary"><span><i class="fa fa-share-square-o fa-3x"></i><h3>Request to Leave</h3></span></button>
+            </span>
+            </form>
+            <!-- Modal -->
+                <div class="modal fade" id="leaveRequestModal" name="leaveRequestModal" tabindex="-1" role="dialog" aria-labelledby="leaveRequestModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="input-group">
+                          <input id="passwordForLeaveReqeust" name="passwordForLeaveReqeust" type="password" placeholder="Enter password">
+                          <input id="password" name="password" type="hidden" value={{accountInfo.2}}>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="proceedLeaveRequestButton" name="proceedLeaveRequestButton" type="button" class="btn btn-success">Proceed</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            {% else %}
+            <h3>Waiting for the owner's response. Please pay your rent before .</h3>
+            <span>
+                <a href="http://127.0.0.1:5000/cancel/request/to/leave/{{info.0.0}}/{{info.0.1}}" class="btn btn-danger"><span><i class="fa fa-trash-o fa-3x"></i><h3>Cancel Request</h3></span></a>
+            </span>
+            {% endif %}
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-8 .col-md-8">
+                <br>
+                <h1 style="margin-left: 5%;">{{unit.7}}</h1>
+                <img style="margin-left: 5%;" src="{{url_for('static',filename='bh.jpg')}}" alt="..." class="img-thumbnail">
+            </div>
+            <div class="col-4 .col-md-8" style="margin-left: -10%;">
+            <br>
+            <br>
+            <br>
+            <br>
+            <h4><span><i class="fa fa-envelope"></i></span> {{unit.15}}</h4>
+            <br>
+            <br>
+            <h4><span><i class="fa fa-phone-square"></i></span> {{unit.16}}</h4>
+            <br>
+            <br>
+            <h4><span><i class="fa fa-user"></i></span> {{unit.12}}</h4>
+            <br>
+            <br>
+            <h4><span><i class="fa fa-money"></i></span> P{{unit.3}}</h4>
+            <br>
+            <br>
+            {% if unit.5 == "F"%}
+            <h4>
+                <span>
+                {% for n in range(unit.4) %}
+                <i class="fa fa-female"></i>
+                {% endfor %}
+                </span> 
+            </h4>
+            {% else %}
+            <h4>
+                <span>
+                {% for n in range(unit.4) %}
+                <i class="fa fa-male"></i>
+                {% endfor %}
+                </span>
+            </h4>
+           
+            {%endif %}
+            <br>
+            <br>    
+            <h4>Starded renting on: {{date}}</h4>
+            
+
+            </div>
+        </div>
+        <div class="row">
+            <br>
+            <h2 style="margin-left: 5%;margin-top: 1%;"><strong>Location:</strong> {{unit.8}},{{unit.9}},{{unit.10}},{{unit.11}}</h2>
+        </div>
+      
+        </div>
+        {% endif %}
+       
+    </div>
+    <div class="container">
+        <div class="float-right" style="margin-top: 2%;">
+            <a href="{{url_for('dashboard')}}"><button class="btn" type="submit"
+                    style="background-color: #C2C8C5; color: black;"><i class="fa fa-arrow-left"
+                        style="margin-right: 5%;"></i>Go back to dashboard</button></a>
+        </div>
+    </div>
+        
+</body>
+<script>
+    $('#requestToLeaveForm').on('submit',function(e){
+        e.preventDefault();
+        $('#leaveRequestModal').modal('toggle');
+
+        $('#proceedLeaveRequestButton').click(function(){
+        var password1 = $('#password').val();
+        var password2 = $('#passwordForLeaveReqeust').val();
+        if (password1!==password2){
+            alert('Wrong password!');
+        }
+        else{
+            e.currentTarget.submit();
+        }
+    })
+
+       
+    })
+   
+</script>
+
+</html>

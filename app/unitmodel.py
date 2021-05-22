@@ -105,3 +105,24 @@ class unit():
 								WHERE units.unitID = %s''', (unitID, ))
         data = cur.fetchone()
         return data
+    
+    @classmethod
+    def rentedUnitInfo(cls, unitID):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT units.unitNo, units.unitID, units.BHID , units.rent,units.numOfOccupants,units.genderAccommodation,boardinghouses.ownersID,boardinghouses.boardingHouseName,locations.street,locations.barangay,locations.cityOrMunicipality,locations.province,accounts.username,profiles.firstName,profiles.lastName,contacts.email,contacts.phoneNumber
+                        FROM (((((units
+                        INNER JOIN locations ON units.unitID = locations.locationID)
+                        INNER JOIN boardinghouses ON units.BHID = boardinghouses.BHID)
+                        INNER JOIN accounts ON boardinghouses.ownersID = accounts.userID)
+                        INNER JOIN profiles ON profiles.profileID = accounts.userID)
+                        INNER JOIN contacts ON contacts.contactID = profiles.profileID)
+								WHERE units.unitID =%s''', (unitID,))
+        data = cur.fetchone()
+        return data
+    
+    @classmethod
+    def rentedUnit(cls,userID):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM renter WHERE userID=%s AND status!=%s",(userID,"L"))
+        data = cur.fetchall()
+        return data

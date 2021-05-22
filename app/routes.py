@@ -10,6 +10,7 @@ import app.unitmodel as units
 import app.locationmodel as locations
 import app.paymentmodel as payments
 import app.reservationmodel as reservations
+import app.rentermodel as renters
 
 
 def loginRequired():
@@ -372,7 +373,14 @@ def addPayment():
 def manageTenants():
     sessionChecker = loginRequired()
     if sessionChecker==True:
-        return render_template('ownermanagetenants.html')
+        reservationList = reservations.reservation()
+        reservationList = reservationList.ownerReservationData(session['accountInfo'][0])
+        renterList = renters.renter()
+        activeRenterList = renterList.tenantsList()
+        renterRequestLeaveList = renterList.leaveRequestList()
+    
+        
+        return render_template('ownermanagetenants.html',reservationList=reservationList,activeRenterList=activeRenterList,renterRequestLeaveList=renterRequestLeaveList,accountInfo=session['accountInfo'])
     else:
         return redirect(url_for("signin"))
 
@@ -455,24 +463,35 @@ def renterPendingReservation():
     
 @app.route('/renter/cancel/reservation/<int:reservationNo>')
 def cancelReservation(reservationNo):
-    reserve = reservations.reservation()
-    reserve.cancelReservation(reservationNo) 
-    return redirect(url_for('renterPendingReservation'))
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        reserve = reservations.reservation()
+        reserve.cancelReservation(reservationNo) 
+        return redirect(url_for('renterPendingReservation'))
+    else:
+         return redirect(url_for("signin"))
 
 
     
 @app.route('/renter/delete/reservation/<int:reservationNo>')
 def deleteReservation(reservationNo):
-    reserve = reservations.reservation()
-    reserve.deleteReservation(reservationNo) 
-    return redirect(url_for('renterPendingReservation'))
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        reserve = reservations.reservation()
+        reserve.deleteReservation(reservationNo) 
+        return redirect(url_for('renterPendingReservation'))
+    else:
+        return redirect(url_for("signin"))
+
 
 @app.route('/renter/payments/list')
 def renterPaymentsList():
     sessionChecker = loginRequired()
     if sessionChecker==True:
+        myPayments = payments.payment()
+        myPayments = myPayments.renterPayments(session['accountInfo'][0])
         return render_template("renterpayments.html",
-                            accountInfo=session['accountInfo'])
+                            accountInfo=session['accountInfo'],myPayments=myPayments)
     else:
         return redirect(url_for("signin"))
     
@@ -510,3 +529,67 @@ def sendRentRequest():
             return redirect(url_for('renterPendingReservation'))
     else:
         return redirect(url_for("signin"))
+
+@app.route('/accept/rent/request/<int:reservationNo>/<string:userID>/<string:unitID>',methods=["POST"])
+def acceptRentRequest(reservationNo,userID,unitID):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        today = datetime.today()
+        date = today.strftime("%Y-%m-%d")
+        renter = renters.renter(userID,unitID,date)
+        reservation = reservations.reservation()
+        reservation.acceptReservation(reservationNo)
+        renter.addRenter()
+        return redirect(url_for('manageTenants'))
+    else:
+        return redirect(url_for("signin"))
+    
+
+@app.route('/renter/rented/unit')
+def rentedUnit():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        unitInfo = units.unit()
+        info = unitInfo.rentedUnit(session['accountInfo'][0])
+        if info!=None:        
+            unit = unitInfo.rentedUnitInfo(info[0][1])
+            return render_template('renterrentedunit.html',info=info,unit=unit,date=str(info[0][2]),accountInfo=session['accountInfo'])
+        else:
+            return render_template('renterrentedunit.html',info=[],unit=[],date=[],accountInfo=session['accountInfo'])
+    else:
+        return redirect(url_for("signin"))
+
+
+@app.route('/renter/rented/unit/request/to/leave/<string:userID>/<string:unitID>',methods=['POST'])
+def requestToLeave(userID,unitID):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        renter = renters.renter()
+        renter.requestRenterLeave(userID,unitID)
+        return redirect(url_for('rentedUnit'))
+    else:
+        return redirect(url_for("signin"))
+
+
+
+@app.route('/cancel/request/to/leave/<string:userID>/<string:unitID>')
+def cancelRequestToLeave(userID,unitID):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        renter = renters.renter()
+        renter.cancelOrDeclineRenterLeave(userID,unitID)
+        return redirect(url_for('rentedUnit'))
+    else:
+        return redirect(url_for("signin"))
+
+
+    
+@app.route('/renter/privacy')
+def renterPrivacy():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        return render_template('renterprivacy.html')
+    else:
+        return redirect(url_for("signin"))
+
+  
