@@ -1,7 +1,9 @@
 from logging import log
 from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify
 from datetime import datetime
+import random
 from app import app
+import secrets
 import app.accountmodel as accounts
 import app.profilemodel as profiles
 import app.contactmodel as contacts
@@ -413,6 +415,7 @@ def addRentRequest(unitID):
     if sessionChecker==True:
         reserve = reservations.reservation()
         reservationChecker = reserve.checkActiveReservation(session['accountInfo'][0])
+        print(reservationChecker)
         
         info = units.unit()
         info = info.unitsInfo(unitID)
@@ -435,19 +438,11 @@ def renterPendingReservation():
         reservationData = reserve.pendingReservation(session['accountInfo'][0])
         if reservationChecker!=None:
             reservationChecker=reservationChecker[4]
+            
         else:
             reservationChecker="N"
-        
         info = units.unit()
-        if reservationData!=None:
-            info = info.unitsInfo(reservationData[2])
-            today = datetime.today()
-            date = today.strftime("%B %d, %Y")
-            return render_template("pendingreservation.html",
-                                accountInfo=session['accountInfo'],
-                                unitInfo=info,
-                                date=date,reservationChecker=reservationChecker,reservationData=reservationData)
-        else:
+        if reservationData==None or len(reservationData)==0:
             info = []
             reservationData= []
      
@@ -456,6 +451,14 @@ def renterPendingReservation():
             date = today.strftime("%B %d, %Y")
             return render_template("pendingreservation.html",
                                 accountInfo=[],
+                                unitInfo=info,
+                                date=date,reservationChecker=reservationChecker,reservationData=reservationData)
+        else:
+            info = info.unitsInfo(reservationData[2])
+            today = datetime.today()
+            date = today.strftime("%B %d, %Y")
+            return render_template("pendingreservation.html",
+                                accountInfo=session['accountInfo'],
                                 unitInfo=info,
                                 date=date,reservationChecker=reservationChecker,reservationData=reservationData)
     else:
@@ -551,11 +554,12 @@ def rentedUnit():
     if sessionChecker==True:
         unitInfo = units.unit()
         info = unitInfo.rentedUnit(session['accountInfo'][0])
-        if info!=None:        
+        print(info)
+        if info==None or len(info)==0:        
+            return render_template('renterrentedunit.html',info=[],unit=[],date=[],accountInfo=session['accountInfo'])
+        else:
             unit = unitInfo.rentedUnitInfo(info[0][1])
             return render_template('renterrentedunit.html',info=info,unit=unit,date=str(info[0][2]),accountInfo=session['accountInfo'])
-        else:
-            return render_template('renterrentedunit.html',info=[],unit=[],date=[],accountInfo=session['accountInfo'])
     else:
         return redirect(url_for("signin"))
 
@@ -583,6 +587,7 @@ def cancelRequestToLeave(userID,unitID):
         return redirect(url_for("signin"))
 
 
+
     
 @app.route('/renter/privacy')
 def renterPrivacy():
@@ -592,4 +597,50 @@ def renterPrivacy():
     else:
         return redirect(url_for("signin"))
 
-  
+@app.route('/send/email/verification/code')
+def sendEmailVerification():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        code = secrets.token_hex(16)
+        msg = "Code: {}".format(code)
+        emailVerification = contacts.contact()
+        emailVerification.emailAlert("Panimalay Email Verification",msg,session['accountInfo'][8])
+        
+        
+        return jsonify(result=code)
+        
+    return redirect(url_for("signin"))
+    
+@app.route('/verify/email',methods=["POST"])
+def verifyEmail():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        email = contacts.contact()
+        email.verifyEmail(session["accountInfo"][0])
+        return redirect(url_for('renterPrivacy'))
+    else:
+        return redirect(url_for("signin"))
+    
+
+@app.route('/send/phone/number/verification/code')
+def sendPhoneNumberVerification():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        emailVerification = contacts.contact()
+        emailVerification.smsAlert(code,session['accountInfo'][9])
+        
+        
+        return jsonify(result=code)
+        
+    return redirect(url_for("signin"))
+
+@app.route('/verify/phone/number',methods=["POST"])
+def verifyPhoneNumber():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        email = contacts.contact()
+        email.verifyPhoneNumber(session["accountInfo"][0])
+        return redirect(url_for('renterPrivacy'))
+    else:
+        return redirect(url_for("signin"))

@@ -1,195 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
+    <meta charset="utf-8">
     <title>Panimalay</title>
     <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </head>
 
 <style>
-    body {
-        background-color: #94B0B7;
-    }
+body {
+background-color: #94B0B7;
+}
+.navbar-dark .navbar-nav .nav-link {
+color: white;
+font-size: 1.7rem;
+}
+.boarding-house-info {
+    margin: 15px 0;
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 5px;
+}
 
-    .navbar-dark .navbar-nav .nav-link {
-        color: white;
-        font-size: 1.7rem;
-    }
+.boarding-house-info p {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d5dadb;
+}
 
-    .card {
-        border: none;
-        margin-bottom: 24px;
-        -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
-        box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
-    }
-
-    .avatar {
-        height: 40px;
-        border-radius: 50%;
-    }
-
-    .text-fade {
-        color: rgba(77, 82, 89, 0.7) !important;
-    }
-
-    .flexbox {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .card-footer {
-        background-color: white;
-        border-top: 1px solid rgba(77, 82, 89, 0.07);
-        color: #8b95a5;
-        padding: 10px 20px
-    }
+.boarding-house-info p:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+p {
+    font-family: "Barlow", sans-serif !important;
+    font-weight: 300;
+    font-size: 1rem;
+    color: #686c6d;
+    letter-spacing: 0.03rem;
+}
+b, strong {
+    font-weight: 700 !important;
+}
+.field-icon {
+  float: right;
+  margin-top: -25px;
+  margin-right: 2%;
+}
 </style>
 <!--End of style-->
 
 <body>
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <nav class="navbar navbar-dark">
-        <div class="container">
-            <a href="{{url_for('dashboard')}}" class="navbar-brand"
-                style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img
-                        src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N
-                    I M A L A
-                    Y </strong></a>
-            <ul class="navbar-nav" style="margin-right: -10%;">
-                <a href="{{url_for('logout')}}" class="nav-link" style="font-size: 18px;">Logout <i
-                        class="fa fa-sign-out"></i></a>
-            </ul>
-        </div>
-    </nav>
-    <!--End of navbar-->
+<!--Navbar-->
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<nav class="navbar navbar-dark">
+<div class="container">
+    <a href="#" class="navbar-brand" style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N I M A L A Y</strong></a>		
+    <ul class="navbar-nav" style="margin-right: -10%;">
+        <a href="adminlogin" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
+    </ul>
+</div>
+</nav>
+<!--End of navbar-->
 
-    <div class="container">
-        
-        {% if info|length==0 %}
-        <h3>No rented unit at the moment.</h3>
-        {% else %}
-        <div style="background-color: white;padding-bottom: 5% ;border-color: black;">
-        <br>
-        <div class="container" style="margin-left: 2%;margin-right: -10%;">
-            
-            {% if info.0.4 == "S" %}
-            <form id="requestToLeaveForm" name="requestToLeaveForm" action="http://127.0.0.1:5000/renter/rented/unit/request/to/leave/{{info.0.0}}/{{info.0.1}}" method="POST">
-            <span>
-            <button type="submit" class="btn btn-primary"><span><i class="fa fa-share-square-o fa-3x"></i><h3>Request to Leave</h3></span></button>
-            </span>
-            </form>
-            <!-- Modal -->
-                <div class="modal fade" id="leaveRequestModal" name="leaveRequestModal" tabindex="-1" role="dialog" aria-labelledby="leaveRequestModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="input-group">
-                          <input id="passwordForLeaveReqeust" name="passwordForLeaveReqeust" type="password" placeholder="Enter password">
-                          <input id="password" name="password" type="hidden" value={{accountInfo.2}}>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button id="proceedLeaveRequestButton" name="proceedLeaveRequestButton" type="button" class="btn btn-success">Proceed</button>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            {% else %}
-            <h3>Waiting for the owner's response. Please pay your rent before .</h3>
-            <span>
-                <a href="http://127.0.0.1:5000/cancel/request/to/leave/{{info.0.0}}/{{info.0.1}}" class="btn btn-danger"><span><i class="fa fa-trash-o fa-3x"></i><h3>Cancel Request</h3></span></a>
-            </span>
-            {% endif %}
-        </div>
-        <br>
-
-        <div class="row">
-            <div class="col-8 .col-md-8">
-                <br>
-                <h1 style="margin-left: 5%;">{{unit.7}}</h1>
-                <img style="margin-left: 5%;" src="{{url_for('static',filename='bh.jpg')}}" alt="..." class="img-thumbnail">
+<!--Boarding house details-->
+<div class="container">
+    {% if info|length==0 %}
+    <h3>No rented unit at the moment.</h3>
+    {% else %}
+    <div class="row">
+        <div class="col-md-5">
+            <div class="boarding-house-info mt-0">
+                <p><i class="fa fa-envelope" style="margin-right: 1%;"></i><b>Email:</b> {{unit.15}}</p>
+                <p><i class="fa fa-phone" style="margin-right: 1%;"></i><b>Phone Number:</b> {{unit.16}}</p>
+                <p><i class="fa fa-user" style="margin-right: 1%;"></i><b>Username:</b> {{unit.12}}</p>
+                <p><i class="fa fa-money" style="margin-right: 1%;"></i><b>Rent Per Month:</b> PHP {{unit.3}}</p>
+                {% if unit.5 == "F"%}
+                <p></i><b>Capacity:</b> {% for n in range(unit.4) %}<i class="fa fa-female"></i>{% endfor %}{% else %}{% for n in range(unit.4) %}<i class="fa fa-male"></i>{% endfor %}</p>
+                {%endif %}
+                <p class="mb-0"><i class="fa fa-calendar" style="margin-right: 1%;"></i><b>Started renting on:</b> {{date}}</p>
             </div>
-            <div class="col-4 .col-md-8" style="margin-left: -10%;">
-            <br>
-            <br>
-            <br>
-            <br>
-            <h4><span><i class="fa fa-envelope"></i></span> {{unit.15}}</h4>
-            <br>
-            <br>
-            <h4><span><i class="fa fa-phone-square"></i></span> {{unit.16}}</h4>
-            <br>
-            <br>
-            <h4><span><i class="fa fa-user"></i></span> {{unit.12}}</h4>
-            <br>
-            <br>
-            <h4><span><i class="fa fa-money"></i></span> P{{unit.3}}</h4>
-            <br>
-            <br>
-            {% if unit.5 == "F"%}
-            <h4>
-                <span>
-                {% for n in range(unit.4) %}
-                <i class="fa fa-female"></i>
-                {% endfor %}
-                </span> 
-            </h4>
-            {% else %}
-            <h4>
-                <span>
-                {% for n in range(unit.4) %}
-                <i class="fa fa-male"></i>
-                {% endfor %}
-                </span>
-            </h4>
-           
-            {%endif %}
-            <br>
-            <br>    
-            <h4>Starded renting on: {{date}}</h4>
-            
 
+            <div class="boarding-house-info mt-0 mb-0">
+               
+                    {% if info.0.4 == "S" %}
+                    <form id="requestToLeaveForm" name="requestToLeaveForm" action="http://127.0.0.1:5000/renter/rented/unit/request/to/leave/{{info.0.0}}/{{info.0.1}}" method="POST">
+                        <span>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 2%;">Request to Leave <i class="fa fa-share"></i></button>
+                        </span>
+                        </form>
+                        <!-- Modal -->
+                            <div class="modal fade" id="leaveRequestModal" name="leaveRequestModal" tabindex="-1" role="dialog" aria-labelledby="leaveRequestModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Password</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="form-group">
+                                      <input class="form-control" id="passwordForLeaveReqeust" name="passwordForLeaveReqeust" type="password"  placeholder="Please enter your password"><span toggle="#passwordForLeaveReqeust" class="fa fa-eye field-icon toggle-firstname"></span>
+                                      <input id="password" name="password" type="hidden" value={{accountInfo.2}}>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button id="proceedLeaveRequestButton" name="proceedLeaveRequestButton" type="button" class="btn btn-success">Proceed</button>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                    <!-- End of Request to leave modal -->
+                    {% else %}
+                    <span><i class="fa fa-bullhorn" style="margin-right: 2%; color: maroon;"></i>Waiting for the owner's response. Please pay your rent before.</span>
+                    <br>
+                    <a href="http://127.0.0.1:5000/cancel/request/to/leave/{{info.0.0}}/{{info.0.1}}"><button type="button" class="btn btn-danger" href="#requesttoleaveModal" style="margin-top: 2%;" data-toggle="modal">Cancel Request <i class="fa fa-trash-o"></i></button></a>
+                    {% endif %}
+                </p>
             </div>
         </div>
-        <div class="row">
-            <br>
-            <h2 style="margin-left: 5%;margin-top: 1%;"><strong>Location:</strong> {{unit.8}},{{unit.9}},{{unit.10}},{{unit.11}}</h2>
-        </div>
-      
+
+        <div class="col-md-7">
+            <img src="{{url_for('static', filename = 'signupbg.jpg')}}" style="width: 100%; max-width: 100%; height: auto;">
+            <div class="boarding-house-info">
+                <p><b>BH Name:</b> {{unit.7}}</p>
+                <p><b>Location:</b> {{unit.8}},{{unit.9}},{{unit.10}},{{unit.11}}</p>
+            </div>
         </div>
         {% endif %}
-       
     </div>
+   
+</div>
     <div class="container">
-        <div class="float-right" style="margin-top: 2%;">
-            <a href="{{url_for('dashboard')}}"><button class="btn" type="submit"
-                    style="background-color: #C2C8C5; color: black;"><i class="fa fa-arrow-left"
-                        style="margin-right: 5%;"></i>Go back to dashboard</button></a>
-        </div>
+    <div class="float-right">
+        <a href="{{url_for('dashboard')}}"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left" style="margin-right: 5%;"></i>Go back to dashboard</button></a>
+    </div> 
     </div>
-        
-</body>
+<!--End of boarding house details-->
+
+<!--Script-->
 <script>
     $('#requestToLeaveForm').on('submit',function(e){
         e.preventDefault();
@@ -204,11 +165,25 @@
         else{
             e.currentTarget.submit();
         }
+    }) 
     })
-
-       
-    })
-   
 </script>
+<!--End of script-->
 
+<!--See password script-->
+<script>
+$(".toggle-firstname").click(function() {
+
+$(this).toggleClass("fa-eye fa-eye-slash");
+var input = $($(this).attr("toggle"));
+if (input.attr("type") == "password") {
+    input.attr("type", "text");
+} else {
+    input.attr("type", "password");
+}
+});
+</script>
+<!--End of see password script-->
+
+</body>
 </html>

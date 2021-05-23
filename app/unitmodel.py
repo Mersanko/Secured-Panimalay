@@ -125,4 +125,5 @@ class unit():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM renter WHERE userID=%s AND status!=%s",(userID,"L"))
         data = cur.fetchall()
+        
         return data
