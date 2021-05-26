@@ -122,9 +122,13 @@ padding-left: 8px;
               <form>
                 <div class="form-group">
                   <label class="d-block">Enable two-factor authentication</label>
-                  <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="switch" name="switch">
-                    <label class="custom-control-label" for="switch"></label>
+                  <div class="custom-control custom-switch" style="margin-left:-3%;">
+                    {% if accountInfo.12 == "Y" %}
+                    <a class="btn btn-danger" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Disable</a>
+                    {% else%}
+                    <a class="btn btn-success" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Enable</a>
+                    {% endif %}
+                    
                   </div>
                   <p class="small text-muted mt-2">Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.</p>
                 </div>
@@ -136,19 +140,31 @@ padding-left: 8px;
                   <ul class="list-group list-group-sm" style="margin-bottom: 1%">
                     <li class="list-group-item">
                       <div>
-                        <h6 class="mb-0">Email Verification</h6>
-                        <small class="text-muted">mersanacanonigo@gmail.com</small>
+                        <h6 class="mb-0">Email Verification 
+                          {% if accountInfo.10 == "Y" %} 
+                          <span><i class="fa fa-check-circle" style="color: blue;"></i></span>
+                          {% endif %}
+                        </h6>
+                        <small class="text-muted">{{accountInfo.8}}</small>
                       </div>
+                      {% if accountInfo.10 =="N" %}
                       <button class="btn btn-primary btn-sm" href="#emailverificationModal" type="button" style="margin-top: 1%;" data-toggle="modal">Verify</button></a>
+                      {% endif %}
                     </li>
                   </ul>
                   <ul class="list-group list-group-sm">
                     <li class="list-group-item">
                       <div>
-                        <h6 class="mb-0">Mobile Verification</h6>
-                        <small class="text-muted">09675188574</small>
+                        <h6 class="mb-0">Mobile Verification
+                          {% if accountInfo.11 == "Y" %} 
+                          <span><i class="fa fa-check-circle" style="color: blue;"></i></span>
+                          {% endif %}
+                        </h6>
+                        <small class="text-muted">{{accountInfo.9}}</small>
                       </div>
+                      {% if accountInfo.11 =="N"%}
                       <button class="btn btn-primary btn-sm" href="#mobileverificationModal" type="button" style="margin-top: 1%;" data-toggle="modal">Verify</button></a>
+                      {% endif %}
                     </li>
                   </ul>
                 </div>
@@ -156,6 +172,7 @@ padding-left: 8px;
             </div>
           </div>
         </div>
+
         <div class="float-right" style="margin-top: 2%;">
           <a href="{{url_for('dashboard')}}"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left" style="margin-right: 5%;"></i>Go back to dashboard</button></a>
         </div> 
@@ -218,6 +235,9 @@ padding-left: 8px;
 	</div>
 </div> 
 <!-- End of email verification modal -->
+<input type="hidden" id="password" name="password" value="{{accountInfo.2}}">
+<input type="hidden" id="emailVerification" name="emailVerification" value="{{accountInfo.10}}">
+<input type="hidden" id="phoneNumberVerification" name="phoneNumberVerification" value="{{accountInfo.11}}">
 
 </body> 
 <script>
@@ -235,9 +255,23 @@ $(document).ready(function(){
     $("#codeSentIndicatorPhone").show();
 
 })
-
-})
-
-
+ 
+});
 </script>
-</html>
+<script>
+  $("#update2FAButton").on("click",function(e){
+    e.preventDefault()
+    var providedPassword = prompt("Enter passowrd");
+    var password = $("#password").val();
+    if (providedPassword!==password){
+      alert("Wrong password, try again.");
+    }
+    if (providedPassword===password){ 
+      $(this).off("click");;
+      this.click();
+    }
+    
+
+  })
+</script>
+</html> 

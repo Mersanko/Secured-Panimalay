@@ -28,7 +28,7 @@ class account():
     @classmethod 
     def login(cls,usernameOrEmail,password):
         cur = mysql.connection.cursor()
-        cur.execute('''SELECT * FROM (SELECT accounts.userID,accounts.username,AES_DECRYPT(accounts.password,UNHEX(SHA2('kumsainibai',512))),accounts.accountType,profiles.firstName,profiles.lastName,profiles.birthdate,profiles.gender,contacts.email,contacts.phoneNumber
+        cur.execute('''SELECT * FROM (SELECT accounts.userID,accounts.username,AES_DECRYPT(accounts.password,UNHEX(SHA2('kumsainibai',512))),accounts.accountType,profiles.firstName,profiles.lastName,profiles.birthdate,profiles.gender,contacts.email,contacts.phoneNumber,contacts.emailVerification,contacts.phoneNumberVerification,contacts.2FA
                         FROM accounts, profiles, contacts
                         WHERE accounts.userID = profiles.profileID AND profiles.profileID = contacts.contactID) AS accountInfo WHERE username=%s or email=%s''',(usernameOrEmail,usernameOrEmail))
         data = cur.fetchall()
@@ -58,9 +58,9 @@ class account():
                 return msg
             
     @classmethod
-    def changePassword(cls,oldPassword,newPassword):
+    def changePassword(cls,userID,oldPassword,newPassword):
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE accounts SET password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) WHERE password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) ",(newPassword,oldPassword))
+        cur.execute("UPDATE accounts SET password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) WHERE password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) AND userID=%s",(newPassword,oldPassword,userID))
         mysql.connection.commit()
         
     @classmethod
@@ -73,3 +73,14 @@ class account():
         else:
             data = []
             return data
+    
+    @classmethod
+    def usernameUniquenessTest(cls,providedUsername):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM accounts WHERE username=%s",(providedUsername,))
+        data = cur.fetchall()
+       
+        if data==None or data==[]:
+            return "Available"
+        else:
+            return "Taken"

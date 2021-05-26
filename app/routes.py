@@ -33,7 +33,7 @@ def home():
 def createAccount():
     if request.method == "POST":
         # info needed in account table
-        username = request.form.get('reg-username')
+        username = request.form.get('username')
         password = request.form.get('reg-password')
         accountType = request.form.get('reg-accountType')
 
@@ -44,8 +44,8 @@ def createAccount():
         birthdate = request.form.get('reg-birthdate')
 
         #info needed in contact tables
-        email = request.form.get('reg-email')
-        phoneNumber = request.form.get('reg-phone')
+        email = request.form.get('email')
+        phoneNumber = request.form.get('phoneNumber')
 
         # initialize account,profile , and contacts for a user
         userAccount = accounts.account(username, password, accountType)
@@ -76,7 +76,7 @@ def createAccount():
 
         else:
             session['accountInfo'] = verificationResult
-            flash(u"Welcome! You've successfuly created an account", 'success')
+            flash("Welcome! You've successfuly created an account", 'success')
             return redirect(
                 url_for('dashboard', accountInfo=session['accountInfo']))
 
@@ -104,6 +104,7 @@ def login():
                         passwordInput=password))
         else:
             session['accountInfo'] = verificationResult
+            flash("Welcome! You've successfully login.","success")
             return redirect(url_for('dashboard'))
    
 @app.route('/dashboard')
@@ -307,7 +308,8 @@ def updateProfileAndContact():
             session.clear()
             accountInfo = account.login(username, password)
             session['accountInfo'] = accountInfo
-            return redirect(url_for('accountInfo'))
+            msg = flash("Well Done! You've successfully updated your profile information.","success")
+            return redirect(url_for('accountInfo',msg=msg ))
     else:
         return redirect(url_for("signin"))
 
@@ -321,8 +323,9 @@ def changePassword():
             oldPassword = request.form.get('oldPass')
             newPassword = request.form.get('newPass')
             account = accounts.account()
-            account.changePassword(oldPassword, newPassword)
-        return redirect(url_for('accountInfo'))
+            account.changePassword(session['accountInfo'][0],oldPassword, newPassword)
+            msg = flash("Well Done! You've successfully updated your profile information.","success")
+        return redirect(url_for('accountInfo',msg=msg))
     return redirect(url_for("signin"))
 
 
@@ -593,9 +596,26 @@ def cancelRequestToLeave(userID,unitID):
 def renterPrivacy():
     sessionChecker = loginRequired()
     if sessionChecker==True:
-        return render_template('renterprivacy.html')
+        if session['accountInfo'][3]=="R":
+            return render_template('renterprivacy.html',jsonifyAccountInfo=jsonify(session['accountInfo']),accountInfo=session['accountInfo'])
+        else:
+            return redirect(url_for("dashboard"))
     else:
         return redirect(url_for("signin"))
+
+
+    
+@app.route('/owner/privacy')
+def ownerPrivacy():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        if session['accountInfo'][3]=="O":
+            return render_template('ownerprivacy.html',jsonifyAccountInfo=jsonify(session['accountInfo']),accountInfo=session['accountInfo'])
+        else:
+            return redirect(url_for("dashboard"))
+    else:
+        return redirect(url_for("signin"))
+
 
 @app.route('/send/email/verification/code')
 def sendEmailVerification():
@@ -617,6 +637,11 @@ def verifyEmail():
     if sessionChecker==True:
         email = contacts.contact()
         email.verifyEmail(session["accountInfo"][0])
+        username = session["accountInfo"][1]
+        password = session["accountInfo"][2]
+        verification = accounts.account()
+        verificationResult = verification.login(username, password)
+        session['accountInfo'] = verificationResult
         return redirect(url_for('renterPrivacy'))
     else:
         return redirect(url_for("signin"))
@@ -641,6 +666,68 @@ def verifyPhoneNumber():
     if sessionChecker==True:
         email = contacts.contact()
         email.verifyPhoneNumber(session["accountInfo"][0])
+        username = session["accountInfo"][1]
+        password = session["accountInfo"][2]
+        verification = accounts.account()
+        verificationResult = verification.login(username, password)
+        session['accountInfo'] = verificationResult
         return redirect(url_for('renterPrivacy'))
     else:
         return redirect(url_for("signin"))
+
+@app.route('/update/2FA')
+def update2FA():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        update2fa = contacts.contact()
+        update2fa.update2FA(session['accountInfo'][0])
+        username = session["accountInfo"][1]
+        password = session["accountInfo"][2]
+        verification = accounts.account()
+        verificationResult = verification.login(username, password)
+        session['accountInfo'] = verificationResult
+        
+        return redirect(url_for('renterPrivacy'))
+    else:
+        return redirect(url_for("signin"))
+
+    
+@app.route('/username/credentials/uniqueness/test')
+def usernameCredentialUniquenessTest():
+    username = request.args.get('username', 0, type=str)
+    uniquenessTest = accounts.account()
+    uniquenessTest = uniquenessTest.usernameUniquenessTest(username)
+    
+    return jsonify(result=uniquenessTest)
+        
+    
+
+@app.route('/email/credentials/uniqueness/test')
+def emailCredentialUuniquenessTest():
+
+    email = request.args.get('email', 0, type=str)
+    uniquenessTest = contacts.contact()
+    uniquenessTest= uniquenessTest.emailUniquenessTest(email)
+
+    return jsonify(result=uniquenessTest)
+    
+
+@app.route('/phoneNumber/credentials/uniqueness/test')
+def phoneNumberCredentialUniquenessTest():
+    phoneNumber = request.args.get('phoneNumber', 0, type=str)
+    uniquenessTest = contacts.contact()
+    uniquenessTest = uniquenessTest.phoneNumberUniquenessTest(phoneNumber)
+    
+    return jsonify(result=uniquenessTest)
+    
+   
+    
+@app.route('/_add_numbers')
+def add_numbers():
+    username = request.args.get('username', 0, type=str)
+  
+    return jsonify(result="gwapo"+username)
+
+@app.route('/test')
+def index():
+    return render_template('index.html')

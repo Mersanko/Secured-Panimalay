@@ -67,7 +67,7 @@ class contact():
     def smsAlert(cls,msg,phoneNumber):
         locationBasesPhoneNumber = '+63'+phoneNumber[1:]
         ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
-        AUTH_TOKEN = 'a32ae784af03dd307805c98c978d5b1c'
+        AUTH_TOKEN = '4d0b227819cc746c0f7af999d31bb713'
 
         client = Client(ACCOUNT_SSID,AUTH_TOKEN )
 
@@ -77,4 +77,35 @@ class contact():
             to=locationBasesPhoneNumber
 
         )
+        
+    @classmethod
+    def emailUniquenessTest(cls,providedEmail):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM contacts WHERE email=%s",(providedEmail,))
+        data = cur.fetchall()
+       
+        if data==None or data==[]:
+            return "Available"
+        else:
+            return "Taken"
+    
+    @classmethod
+    def phoneNumberUniquenessTest(cls,providedPhoneNumber):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM contacts WHERE phoneNumber=%s",(providedPhoneNumber,))
+        data = cur.fetchall()
+        if data==None or data==[]:
+            return "Available"
+        else:
+            return "Taken"
+
+    @classmethod
+    def update2FA(cls,contactID):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM contacts WHERE contactID=%s",(contactID,))
+        data = cur.fetchone()
+        if data[5]=="N":
+            cur.execute("UPDATE contacts SET 2FA=%s WHERE contactID=%s",("Y",contactID))
+        else:
+            cur.execute("UPDATE contacts SET 2FA=%s WHERE contactID=%s",("N",contactID))
         
