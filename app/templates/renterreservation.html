@@ -21,42 +21,48 @@
 </head>
 
 <style>
-    body {
-        background-color: #94B0B7;
-    }
+body {
+    background-color: #94B0B7;
+}
 
-    .navbar-dark .navbar-nav .nav-link {
-        color: white;
-        font-size: 1.7rem;
-    }
+.navbar-dark .navbar-nav .nav-link {
+    color: white;
+    font-size: 1.7rem;
+}
 
-    .card {
-        border: none;
-        margin-bottom: 24px;
-        -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
-        box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
-    }
+.card {
+    border: none;
+    margin-bottom: 24px;
+    -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+    box-shadow: 0 0 13px 0 rgba(236, 236, 241, .44);
+}
 
-    .avatar {
-        height: 40px;
-        border-radius: 50%;
-    }
+.avatar {
+    height: 40px;
+    border-radius: 50%;
+}
 
-    .text-fade {
-        color: rgba(77, 82, 89, 0.7) !important;
-    }
+.text-fade {
+    color: rgba(77, 82, 89, 0.7) !important;
+}
 
-    .flexbox {
-        display: flex;
-        justify-content: space-between;
-    }
+.flexbox {
+    display: flex;
+    justify-content: space-between;
+}
 
-    .card-footer {
-        background-color: white;
-        border-top: 1px solid rgba(77, 82, 89, 0.07);
-        color: #8b95a5;
-        padding: 10px 20px
-    }
+.card-footer {
+    background-color: white;
+    border-top: 1px solid rgba(77, 82, 89, 0.07);
+    color: #8b95a5;
+    padding: 10px 20px
+}
+.field-icon {
+    float: left;
+    margin-top: 2%;
+    margin-right: 2%;
+    margin-left: -5%;
+}
 </style>
 <!--End of style-->
 
@@ -99,16 +105,16 @@
                                 style="margin-left: 50px;margin-top: 25px;">
                                 <h4>Reservation Details</h4>
                                 <p class="text-fade"
-                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Boarding House:
-                                    {{unitInfo.7}}
+                                    style="font-size: 14px !important; margin-bottom: 12px !important;"><b>Boarding House:
+                                    {{unitInfo.7}}</b>
                                 </p>
                                 <p class="text-fade"
-                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Unit #:
+                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Unit No:
                                     {{unitInfo.0}}
                                 </p>
                                 <p class="text-fade"
                                     style="font-size: 14px !important; margin-bottom: 12px !important;">Rent:
-                                    {{unitInfo.3}}
+                                    PHP {{unitInfo.3}}
                                 <p class="text-fade"
                                     style="font-size: 14px !important; margin-bottom: 12px !important;">Capacity:
                                     {{unitInfo.4}}</p>
@@ -122,14 +128,9 @@
                     <div style="margin-right: 50px;margin-top: 25px;;">
                         <div class="media-right text-right d-none d-md-block">
                             <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;">
-                                Owner's
-                                Username:</p>
-                            <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;"><i
-                                    class="fa fa-user pr-1"></i>{{unitInfo.12}}</p>
+                                <i class="fa fa-user pr-1"></i>Owner's Username: {{unitInfo.12}}</p>
                             <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;">
-                                Owner's
-                                Phone No.:</p>
-                            <span class="text-fade"><i class="fa fa-phone pr-1"></i> {{unitInfo.16}}</span>
+                                <i class="fa fa-phone pr-1"></i>Owner's Phone No: {{unitInfo.16}}</p>
                         </div>
                     </div>
                 </div>
@@ -175,13 +176,13 @@
                 <div class="modal-body">
                     <form id="reservationForm" name="reservationForm" action="{{url_for('sendRentRequest')}}"
                         method="POST">
-                        <label for="passwordCheck">Password</label>
-                        <input id="passwordCheck" name="passwordCheck" class="input-group" type="password"
-                            placeholder="Enter your password">
-                        <input id="unitID" name="unitID" type="hidden" value='{{unitID}}'>
-                        <input id="userID" name="userID" type="hidden" value='{{accountInfo.0}}'>
-                        <input id="password" name="password" type="hidden" value={{accountInfo.2}}>
-                        <input id="reservationChecker" name="reservationChecker" type="hidden" value="{{reservationChecker.4}}">
+                        <input class="form-control" id="passwordCheck" name="passwordCheck" type="password"
+                            placeholder="Please enter your password">
+                            <br><input type="checkbox" id="showPassword" name="showPassword" onclick="myFunction('showPassword','passwordCheck')"> Show Password
+                        <input id="unitID" name="unitID" type="hidden" class="form-control" value='{{unitID}}'>
+                        <input id="userID" name="userID" type="hidden" class="form-control" value='{{accountInfo.0}}'>
+                        <input id="password" name="password" type="hidden"  class="form-control" value={{accountInfo.2}}>
+                        <input id="reservationChecker" name="reservationChecker" class="form-control" type="hidden" value="{{reservationChecker.4}}">   
                 </div>
                 <div class=" modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -217,6 +218,18 @@
     
         });
     });
+</script>
+
+<script>
+    function myFunction(checkBoxID,inputID) {
+        if ($('#'+checkBoxID).is(":checked")){
+            $('#'+inputID).attr('type','text');
+        }
+        else{
+            $('#'+inputID).attr('type','password');
+        }
+        
+}
 </script>
 
 </html>

@@ -16,6 +16,7 @@ class profile():
         cur.execute("INSERT INTO profiles(profileID,firstName,lastName,birthdate,gender) VALUES (%s,%s,%s,%s,%s)",
                     (self.profileID, self.firstName,self.lastName,self.birthdate,self.gender))
         mysql.connection.commit()
+        cur.close()
     
     @classmethod 
     def updateProfile(cls,profileID,firstName,lastName,gender,birthDate):
@@ -23,4 +24,5 @@ class profile():
         cur.execute("UPDATE profiles SET firstName=%s, lastName=%s, gender=%s, birthDate=%s WHERE profileID=%s",(firstName,lastName,gender,birthDate,profileID))
         mysql.connection.commit()
         msg = "Profile successfully updated."
+        cur.close()
         return msg

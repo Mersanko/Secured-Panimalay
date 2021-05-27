@@ -18,12 +18,14 @@ class boardingHouse():
                 
         cur.execute("INSERT INTO boardinghouses(BHID,ownersID,boardingHouseName) VALUES (%s,%s,%s)",(bhID,self.ownersID,self.boardingHouseName))
         mysql.connection.commit()
+        cur.close()
 
     @classmethod
     def searchBoardingHouse(cls,userID):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM boardingHouses WHERE ownersID=%s",(userID,))
         bh = cur.fetchone()
+        cur.close()
         return bh
     
     @classmethod
@@ -31,6 +33,7 @@ class boardingHouse():
         cur = mysql.connection.cursor()
         cur.execute("UPDATE boardingHouses SET boardingHouseName=%s WHERE ownersID=%s",(bhName,userID))
         mysql.connection.commit()
+        cur.close()
    
    
         

@@ -45,15 +45,15 @@ background-size: 100% 100%;
 </header>
 
 <div class="admin-page">
-    <form method="post" action="#" role="form" class="text-center m-t-30">
+    <form method="POST" action="{{url_for('adminLoginCheckCredentials')}}" role="form" class="text-center m-t-30">
         <div class="user-thumb">
-            <img src="{{url_for('static', filename = 'mersan.jpg')}}" class="img-circle img-thumbnail">
+            <img src="{{url_for('static', filename = 'admin-settings-male.png')}}" class="img-circle img-thumbnail">
         </div>
         <div class="form-group">
-            <h3><b>Mersan Canonigo</b></h3>
+            <h3><b>Admin</b></h3>
             <p class="text-muted">Enter your password to access the admin.</p>
             <div class="input-group m-t-30">
-                <input type="password" class="form-control" placeholder="Password">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password">
                 <span class="input-group-btn" style="color: white;"> <button type="submit" class="btn" style="background-color: #4A707A;">
                     Log In
                 </button> </span>

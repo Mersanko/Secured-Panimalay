@@ -17,6 +17,7 @@ class contact():
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO contacts(contactID,email,phoneNumber) VALUES (%s,%s,%s)",(self.contactID,self.email,self.phoneNumber))
         mysql.connection.commit()
+        cur.close()
     
     @classmethod
     def updateContact(cls,contactID,phoneNo,email):
@@ -24,6 +25,7 @@ class contact():
         cur.execute('UPDATE contacts SET phoneNumber=%s,email=%s WHERE contactID=%s',(phoneNo,email,contactID))
         mysql.connection.commit()
         msg = 'Contact successfully updated'
+        cur.close()
         return msg
     
     @classmethod
@@ -32,6 +34,7 @@ class contact():
         cur.execute('UPDATE contacts SET emailVerification=%s WHERE contactID=%s',("Y",userID))
         mysql.connection.commit()
         msg = 'Email successfully verified'
+        cur.close()
         return msg
     
     @classmethod
@@ -40,6 +43,7 @@ class contact():
         cur.execute('UPDATE contacts SET phoneNumberVerification=%s WHERE contactID=%s',("Y",userID))
         mysql.connection.commit()
         msg = 'Phone number successfully verified'
+        cur.close()
         return msg
 
 
@@ -67,7 +71,7 @@ class contact():
     def smsAlert(cls,msg,phoneNumber):
         locationBasesPhoneNumber = '+63'+phoneNumber[1:]
         ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
-        AUTH_TOKEN = '4d0b227819cc746c0f7af999d31bb713'
+        AUTH_TOKEN = '2d2c283b72d7687b2237d6f3638eeeec'
 
         client = Client(ACCOUNT_SSID,AUTH_TOKEN )
 
@@ -77,6 +81,7 @@ class contact():
             to=locationBasesPhoneNumber
 
         )
+        
         
     @classmethod
     def emailUniquenessTest(cls,providedEmail):
@@ -88,6 +93,7 @@ class contact():
             return "Available"
         else:
             return "Taken"
+        cur.close()
     
     @classmethod
     def phoneNumberUniquenessTest(cls,providedPhoneNumber):
@@ -98,7 +104,8 @@ class contact():
             return "Available"
         else:
             return "Taken"
-
+        cur.close()
+        
     @classmethod
     def update2FA(cls,contactID):
         cur = mysql.connection.cursor()
@@ -108,4 +115,5 @@ class contact():
             cur.execute("UPDATE contacts SET 2FA=%s WHERE contactID=%s",("Y",contactID))
         else:
             cur.execute("UPDATE contacts SET 2FA=%s WHERE contactID=%s",("N",contactID))
-        
+        mysql.connection.commit()
+        cur.close()

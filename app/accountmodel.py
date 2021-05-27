@@ -56,12 +56,14 @@ class account():
             else:
                 msg = "Invalid login credentials"
                 return msg
-            
+        cur.close()
+        
     @classmethod
     def changePassword(cls,userID,oldPassword,newPassword):
         cur = mysql.connection.cursor()
         cur.execute("UPDATE accounts SET password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) WHERE password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) AND userID=%s",(newPassword,oldPassword,userID))
         mysql.connection.commit()
+        cur.close()
         
     @classmethod
     def searchAllAccounts(cls):
@@ -69,10 +71,13 @@ class account():
         cur.execute("SELECT userID,username FROM accounts")
         data = cur.fetchall()
         if data!=None:
+            cur.close()
             return data
         else:
             data = []
+            cur.close()
             return data
+        
     
     @classmethod
     def usernameUniquenessTest(cls,providedUsername):
@@ -81,6 +86,9 @@ class account():
         data = cur.fetchall()
        
         if data==None or data==[]:
+            cur.close()
             return "Available"
         else:
+            cur.close()
             return "Taken"
+        

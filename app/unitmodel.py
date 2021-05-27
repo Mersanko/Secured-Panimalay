@@ -29,6 +29,7 @@ class unit():
             (unitID, self.bhID, self.priceRent, self.numOfOccupants,
              self.genderAccommodation))
         mysql.connection.commit()
+        cur.close()
         return unitID
 
     @classmethod
@@ -37,6 +38,7 @@ class unit():
         cur.execute("SELECT * FROM units WHERE bhID=%s ORDER BY unitNo",
                     (bhID, ))
         units = cur.fetchall()
+        cur.close()
         return units
 
     @classmethod
@@ -47,6 +49,7 @@ class unit():
             (rent, numOfOccupants, genderAccommodation, unitID))
         mysql.connection.commit()
         msg = "Record was successfully updated"
+        cur.close()
         return msg
 
     @classmethod
@@ -55,6 +58,7 @@ class unit():
         cur.execute("DELETE FROM units WHERE unitID=%s", (unitID, ))
         mysql.connection.commit()
         msg = "Record was successfully deleted"
+        cur.close()
         return msg
 
     @classmethod
@@ -66,6 +70,7 @@ class unit():
                     or numOfOccupants LIKE %s or genderAccommodation LIKE %s''',
             (bhID, searchInput, searchInput, searchInput, searchInput))
         data = cur.fetchall()
+        cur.close()
         return data
 
     @classmethod
@@ -82,6 +87,7 @@ class unit():
             (inputLocation, inputLocation, inputLocation, inputLocation, rent,
              capacity, genderAccommodation))
         data = cur.fetchall()
+        cur.close()
         return data
 
     @classmethod
@@ -89,6 +95,7 @@ class unit():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM units")
         data = cur.fetchall()
+        cur.close()
         return data
 
     @classmethod
@@ -104,6 +111,7 @@ class unit():
                         INNER JOIN contacts ON contacts.contactID = profiles.profileID)
 								WHERE units.unitID = %s''', (unitID, ))
         data = cur.fetchone()
+        cur.close()
         return data
     
     @classmethod
@@ -118,6 +126,7 @@ class unit():
                         INNER JOIN contacts ON contacts.contactID = profiles.profileID)
 								WHERE units.unitID =%s''', (unitID,))
         data = cur.fetchone()
+        cur.close()
         return data
     
     @classmethod
@@ -125,5 +134,5 @@ class unit():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM renter WHERE userID=%s AND status!=%s",(userID,"L"))
         data = cur.fetchall()
-        
+        cur.close()
         return data

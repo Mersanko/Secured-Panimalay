@@ -11,6 +11,7 @@ class payment():
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO payments(userID,bhID,amount,paymentDate) VALUES (%s,%s,%s,%s)",(self.userID,self.bhID,self.amount,self.paymentDate))
         mysql.connection.commit()
+        cur.close()
     
     @classmethod
     def paymentToBh(cls,bhID):
@@ -18,9 +19,11 @@ class payment():
         cur.execute("SELECT * FROM payments WHERE bhID=%s",(bhID,))
         data = cur.fetchall()
         if data!=None:
+            cur.close()
             return data
         else:
             data = []
+            cur.close()
             return data
     
     @classmethod
@@ -32,8 +35,10 @@ class payment():
 		    WHERE userID=%s''',(userID,))
         data = cur.fetchall()
         if data!=None:
+            cur.close()
             return data
         else:
             data = []
+            cur.close()
             return data
         

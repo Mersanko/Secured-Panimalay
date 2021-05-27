@@ -13,6 +13,7 @@ class location():
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO locations(locationID,street,barangay,cityOrMunicipality,province) VALUES (%s,%s,%s,%s,%s)",(self.locationID,self.street,self.barangay,self.cityOrMunicipality,self.province))
         mysql.connection.commit()
+        cur.close()
     
     
     @classmethod
@@ -20,6 +21,7 @@ class location():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM locations")
         data = cur.fetchall()
+        cur.close()
         return data
         
     @classmethod
@@ -27,12 +29,14 @@ class location():
         cur = mysql.connection.cursor()
         cur.execute("UPDATE locations SET street=%s,barangay=%s,cityOrMunicipality=%s,province=%s WHERE locationID=%s ",(street,barangay,cityOrMunicipality,province,locationID))
         mysql.connection.commit()
+        cur.close()
         
     @classmethod
     def deleteLocation(cls,locationID):
         cur = mysql.connection.cursor()
         cur.execute("DELETE FROM locations WHERE locationID=%s",(locationID))
         mysql.connection.commit()
+        cur.close()
         
         
     

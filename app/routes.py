@@ -1,7 +1,10 @@
 from logging import log
-from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify
+from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify,abort
 from datetime import datetime
 import random
+from flask_ipban.ip_ban import IpBan
+
+from werkzeug.utils import html
 from app import app
 import secrets
 import app.accountmodel as accounts
@@ -13,7 +16,7 @@ import app.locationmodel as locations
 import app.paymentmodel as payments
 import app.reservationmodel as reservations
 import app.rentermodel as renters
-
+import app.logsmodel as logs    
 
 def loginRequired():
     if "accountInfo" in session:
@@ -104,6 +107,9 @@ def login():
                         passwordInput=password))
         else:
             session['accountInfo'] = verificationResult
+            description = "{} signed in".format(session['accountInfo'][1])
+            log = logs.log(description)
+            log.addLogs()
             flash("Welcome! You've successfully login.","success")
             return redirect(url_for('dashboard'))
    
@@ -122,6 +128,9 @@ def dashboard():
     
 @app.route('/logout')
 def logout():
+    description = "{} signed out".format(session['accountInfo'][1]) 
+    log = logs.log(description)
+    log.addLogs()
     session.clear()
     return redirect(url_for("signin"))
 
@@ -365,9 +374,11 @@ def addPayment():
             bhID = request.form.get('bhID')
             amount = request.form.get('amount')
             paymentDate = request.form.get('paidDate')
-
             payment = payments.payment(renter, bhID, amount, paymentDate)
             payment.addPayment()
+            description = "{} pays P{} to {} ".format(renter,amount,bhID)
+            log= logs.log(description)
+            log.addLogs()
         return redirect(url_for('managePayment'))
     else:
         return redirect(url_for("signin"))
@@ -383,7 +394,6 @@ def manageTenants():
         renterList = renters.renter()
         activeRenterList = renterList.tenantsList()
         renterRequestLeaveList = renterList.leaveRequestList()
-    
         
         return render_template('ownermanagetenants.html',reservationList=reservationList,activeRenterList=activeRenterList,renterRequestLeaveList=renterRequestLeaveList,accountInfo=session['accountInfo'])
     else:
@@ -418,12 +428,11 @@ def addRentRequest(unitID):
     if sessionChecker==True:
         reserve = reservations.reservation()
         reservationChecker = reserve.checkActiveReservation(session['accountInfo'][0])
-        print(reservationChecker)
-        
         info = units.unit()
         info = info.unitsInfo(unitID)
         today = datetime.today()
         date = today.strftime("%B %d, %Y")
+        flash("Awesome! You've successfuly sent a request for a reservation.", 'success')
         return render_template("renterreservation.html",
                             accountInfo=session['accountInfo'],
                             unitID=unitID,
@@ -490,6 +499,28 @@ def deleteReservation(reservationNo):
         return redirect(url_for("signin"))
 
 
+@app.route('/confirm/leave/request/<string:userID>',methods=["POST"])
+def confirmLeaveRequest(userID):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        leaveRequest = renters.renter()
+        leaveRequest.confirmLeaveRequest(userID)
+        return redirect(url_for('manageTenants'))
+    else:
+        return redirect(url_for("signin"))
+
+@app.route('/decline/leave/request/<string:userID>')
+def declineLeaveRequest(userID):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        leaveRequest = renters.renter()
+        leaveRequest.declineLeaveRequest(userID)
+        return redirect(url_for('manageTenants'))
+    else:
+        return redirect(url_for("signin"))
+        
+            
+
 @app.route('/renter/payments/list')
 def renterPaymentsList():
     sessionChecker = loginRequired()
@@ -532,6 +563,9 @@ def sendRentRequest():
             date = today.strftime("%Y-%m-%d")
             reserve = reservations.reservation(userID, unitID, date)
             reserve.addReservation()
+            description = "{} send reservation for unit: {}".format(session['accountInfo'][0],unitID)
+            log= logs.log(description)
+            log.addLogs()
             return redirect(url_for('renterPendingReservation'))
     else:
         return redirect(url_for("signin"))
@@ -549,7 +583,18 @@ def acceptRentRequest(reservationNo,userID,unitID):
         return redirect(url_for('manageTenants'))
     else:
         return redirect(url_for("signin"))
-    
+
+@app.route('/decline/rent/request/<int:reservationNo>')
+def declineRentRequest(reservationNo):
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        reservation = reservations.reservation()
+        reservation.declineReservation(reservationNo)
+        return redirect(url_for('manageTenants'))
+    else:
+        return redirect(url_for("signin"))
+
+
 
 @app.route('/renter/rented/unit')
 def rentedUnit():
@@ -557,8 +602,7 @@ def rentedUnit():
     if sessionChecker==True:
         unitInfo = units.unit()
         info = unitInfo.rentedUnit(session['accountInfo'][0])
-        print(info)
-        if info==None or len(info)==0:        
+        if info==None or len(info)==0:    
             return render_template('renterrentedunit.html',info=[],unit=[],date=[],accountInfo=session['accountInfo'])
         else:
             unit = unitInfo.rentedUnitInfo(info[0][1])
@@ -686,11 +730,21 @@ def update2FA():
         verification = accounts.account()
         verificationResult = verification.login(username, password)
         session['accountInfo'] = verificationResult
-        
-        return redirect(url_for('renterPrivacy'))
+        if  session["accountInfo"][3]=="R":
+            return redirect(url_for('renterPrivacy'))
+        else:
+              return redirect(url_for('ownerPrivacy'))
     else:
         return redirect(url_for("signin"))
 
+@app.route('/email/OTP')
+def emailOTP():
+    return render_template("emailotp.html")
+
+
+@app.route('/sms/OTP')
+def smsOTP():
+    return render_template("smsotp.html")
     
 @app.route('/username/credentials/uniqueness/test')
 def usernameCredentialUniquenessTest():
@@ -720,14 +774,68 @@ def phoneNumberCredentialUniquenessTest():
     
     return jsonify(result=uniquenessTest)
     
-   
-    
-@app.route('/_add_numbers')
-def add_numbers():
-    username = request.args.get('username', 0, type=str)
-  
-    return jsonify(result="gwapo"+username)
 
-@app.route('/test')
-def index():
-    return render_template('index.html')
+@app.route('/admin/dashboard')
+def adminDashboard():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template('admindashboard.html')
+
+
+@app.route('/admin/login')
+def adminLogin():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template('adminlogin.html')
+
+@app.route('/admin/login/check/credentials',methods=["POST"])
+def adminLoginCheckCredentials():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        if request.method=="POST":
+            password = request.form.get("password",0,str)
+            if password=="jacjac29":
+                return redirect(url_for('adminDashboard'))
+            else:
+                
+                return redirect(url_for('adminLogin'))
+    
+@app.route('/admin/account')
+def adminAccount():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template("adminaccount.html")
+    
+@app.route('/admin/logs')
+def adminLogs():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template("adminlogs.html")
+
+@app.route('/admin/manage/passwords')
+def adminManagePasswords():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template("adminmanagepasswords.html")
+
+@app.route('/admin/manage/payments')
+def adminManagePayments():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template("adminmanagepayments.html")
+
+   

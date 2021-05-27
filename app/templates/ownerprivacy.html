@@ -125,8 +125,10 @@ padding-left: 8px;
                   <div class="custom-control custom-switch" style="margin-left:-3%;">
                     {% if accountInfo.12 == "Y" %}
                     <a class="btn btn-danger" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Disable</a>
-                    {% elif  accountInfo.12 == "N"%}
+                    {% elif accountInfo.12 == "N" and (accountInfo.10=="Y" or accountInfo.11=="Y") %}
                     <a class="btn btn-success" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Enable</a>
+                    {% elif accountInfo.12 == "N" and accountInfo.10=="N" and  accountInfo.11=="N"%}
+                    <button class="btn btn-success" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}" disabled>Enable</button>
                     {% endif %}
                     
                   </div>

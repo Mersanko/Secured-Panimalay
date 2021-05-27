@@ -76,7 +76,9 @@ b, strong {
 <!--Boarding house details-->
 <div class="container">
     {% if info|length==0 %}
-    <h3>No rented unit at the moment.</h3>
+    <div class="alert alert-danger">
+        <strong class="default"><i class="fa fa-exclamation"></i> Oops,</strong> You have no rented unit at the moment!
+    </div>
     {% else %}
     <div class="row">
         <div class="col-md-5">
@@ -86,7 +88,9 @@ b, strong {
                 <p><i class="fa fa-user" style="margin-right: 1%;"></i><b>Username:</b> {{unit.12}}</p>
                 <p><i class="fa fa-money" style="margin-right: 1%;"></i><b>Rent Per Month:</b> PHP {{unit.3}}</p>
                 {% if unit.5 == "F"%}
-                <p></i><b>Capacity:</b> {% for n in range(unit.4) %}<i class="fa fa-female"></i>{% endfor %}{% else %}{% for n in range(unit.4) %}<i class="fa fa-male"></i>{% endfor %}</p>
+                <p></i><b>Capacity:</b> {% for n in range(unit.4) %}<i class="fa fa-female"></i>{% endfor %}</p>
+                {% else %}
+                <p></i><b>Capacity:</b> {% for n in range(unit.4) %}<i class="fa fa-male"></i>{% endfor %}</p>
                 {%endif %}
                 <p class="mb-0"><i class="fa fa-calendar" style="margin-right: 1%;"></i><b>Started renting on:</b> {{date}}</p>
             </div>

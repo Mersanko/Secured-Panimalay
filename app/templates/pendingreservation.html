@@ -76,7 +76,6 @@
     </nav>
     <!--End of navbar-->
 
-
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <div id="page-wrapper" class="container">
         <div class="row">
@@ -87,10 +86,30 @@
             </div>
         </div>
     </div>
+
+    <!--Flash message-->
+    <div class="container">
+    <div id="flashMessage">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" id="closeFlashMessage" class="close" data-dismiss="alert"
+                aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    </div>
+    <!--End of flash message-->
     
     {% if accountInfo|length == 0 %}
     <div class="container">
-        <h3>No pending reservation...</h3>
+        <div class="alert alert-danger">
+            <strong class="default"><i class="fa fa-exclamation"></i> Oops,</strong> You have no pending reservation at the moment!
+        </div>
         <div class="float-right" style="margin-top: 2%;">
             <a href="{{url_for('dashboard')}}"><button class="btn" type="submit"
                     style="background-color: #C2C8C5; color: black;"><i class="fa fa-arrow-left"
@@ -108,11 +127,11 @@
                                 style="margin-left: 50px;margin-top: 25px;">
                                 <h4>Reservation Details</h4>
                                 <p class="text-fade"
-                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Boarding House:
-                                    {{unitInfo.7}}
+                                    style="font-size: 14px !important; margin-bottom: 12px !important;"><b>Boarding House:
+                                    {{unitInfo.7}}</b>
                                 </p>
                                 <p class="text-fade"
-                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Unit No.:
+                                    style="font-size: 14px !important; margin-bottom: 12px !important;">Unit No:
                                     {{unitInfo.0}}
                                 </p>
                                 <p class="text-fade"
@@ -131,26 +150,28 @@
                     <div style="margin-right: 50px;margin-top: 25px;;">
                         <div class="media-right text-right d-none d-md-block">
                             <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;">
-                                Owner's
-                                Username:</p>
-                            <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;"><i
-                                    class="fa fa-user pr-1"></i>{{unitInfo.12}}</p>
+                                <i class="fa fa-user pr-1"></i>Owner's Username: {{unitInfo.12}}</p>
                             <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;">
-                                Owner's
-                                Phone No.:</p>
-                            <span class="text-fade"><i class="fa fa-phone pr-1"></i> {{unitInfo.16}}</span>
+                                <i class="fa fa-phone pr-1"></i>Owner's Phone No: {{unitInfo.16}}</p>
+                                
                             <p class="text-fade" style="font-size: 14px !important; margin-bottom: 12px !important;">
-                                Status:</p>
+                                Status:
                            
                             {% if reservationData.4 == "P" %}
-                            <span class="text-fade"></i>Pending</span>
+                            <span class="badge badge-danger">
+                            <span class="" style="color: white;"></i>Pending</span>
                             {% elif reservationData.4 == "D" %}
-                            <span class="text-fade"></i>Decline</span>
+                            <span class="badge badge-warning">
+                            <span class="" style="color: black;"></i>Decline</span>
                             {% elif reservationData.4 == "A" %}
-                            <span class="text-fade"></i>Accepted</span>
+                            <span class="badge badge-success">
+                            <span class="" style="color: white;"></i>Accepted</span>
                             {% elif reservationData.4 == "C" %}
-                            <span class="text-fade"></i>Cancelled</span>
+                            <span class="badge badge-secondary">
+                            <span class="" style="color: white;"></i>Cancelled</span>
                             {% endif %}
+                            </span>
+                            </p>
                         </div>
                     </div>
                 </div>
