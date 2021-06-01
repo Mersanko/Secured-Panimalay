@@ -117,3 +117,47 @@ class contact():
             cur.execute("UPDATE contacts SET 2FA=%s WHERE contactID=%s",("N",contactID))
         mysql.connection.commit()
         cur.close()
+    
+    
+    @classmethod
+    def sendEmailVerificationCodeForPaymentUpdate(cls, to):
+        msg = EmailMessage()
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        body = 'Code: {}'.format(code)
+        msg.set_content(body)
+
+        msg['subject'] = "Email Verification"
+        msg['to'] = to
+
+        user = "mersanko1@gmail.com"
+        msg['from'] = user
+        password = "nbihpgiycoerznfg"
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(user, password)
+        server.send_message(msg)
+        server.quit()
+    
+        return code
+    
+    @classmethod
+    def findEmailUsingbhID(cls,BHID):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT boardinghouses.ownersID,contacts.email,boardinghouses.BHID
+                    FROM contacts 
+                    INNER JOIN boardinghouses ON contacts.contactID = boardinghouses.ownersID
+                    WHERE BHID=%s''',(BHID,))
+        data = cur.fetchone()
+        cur.close()
+    
+        return data
+
+    @classmethod
+    def findEmailUsingUserID(cls,userID):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT * FROM contacts WHERE contactID=%s''',(userID,))
+        data = cur.fetchall()
+        cur.close()
+    
+        return data

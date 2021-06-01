@@ -36,6 +36,11 @@ body {
     width: 88px;
     border-radius: 50%;
 }
+.field-icon {
+  float: right;
+  margin-top: -25px;
+  margin-right: 2%;
+}
 </style>
 <!--End of style-->
 
@@ -45,7 +50,7 @@ body {
     <div class="container">
         <a href="#" class="navbar-brand" style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N I M A L A Y</strong></a>		
         <ul class="navbar-nav" style="margin-right: -10%;">
-            <a href="adminlogin" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
+            <a href="{{url_for('adminLogout')}}" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
         </ul>
     </div>
 </nav>
@@ -63,12 +68,12 @@ body {
                         <img src="{{url_for('static', filename = 'mersan.jpg')}}">
                     </div>
                     <div class="form-group">
-                        <label for="current-for-pass">Enter your current password</label>
-                        <input class="form-control" type="text" name="current-for-pass" id="current-for-pass" required="1" value="">
-                        <label for="new-for-pass">Enter your new password</label>
-                        <input class="form-control" type="text" name="new-for-pass" id="new-for-pass" required="1" value="">
-                        <label for="question-for-pass">Secret Question:</label>
-                            <select class="custom-select mr-sm-2" id="question-for-pass" name="question-for-pass">
+                        <label for="currentPass">Enter your current password</label>
+                        <input class="form-control" type="password" name="currentPass" id="currentPass" required="1" value=""><span toggle="#currentPass" class="fa fa-eye field-icon toggle-firstname"></span>
+                        <label for="newPass">Enter your new password</label>
+                        <input class="form-control" type="password" name="newPass" id="newPass" required="1" value=""><span toggle="#newPass" class="fa fa-eye field-icon toggle-firstname"></span>
+                        <label for="secretQuestion">Secret Question:</label>
+                            <select class="custom-select mr-sm-2" id="secretQuestion" name="secretQuestion">
                                 <option disabled selected>Select Secret Question</option>
                                 <option value="musicianSurname">Your favorite musician's surname</option>
                                 <option value="Street">The street you grew up on</option>
@@ -79,7 +84,8 @@ body {
                                 <option value="Book">Your favorite childhood book</option>
                                 <option value="Game">Your favorite computer game</option>
                             </select>
-                            <small class="form-text text-muted">We use this to help identify you as the admin.</small>
+                        <input class="form-control" type="text" name="secretAnswer" id="secretAnswer" required="1" value="" placeholder="Please enter your secret question answer" style="margin-top: 2%">
+                        <small class="form-text" style="color: red;">We use this to help identify you as the admin.</small>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -93,5 +99,20 @@ body {
     </div>
 </div>
 <!--End of change of password-->
+
+<!--Toggle script-->
+<script>
+    $(".toggle-firstname").click(function () {
+
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
+<!--Toggle script-->
 </body>
 </html>

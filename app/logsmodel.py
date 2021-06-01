@@ -15,3 +15,12 @@ class log():
         cur.execute("INSERT INTO logs(logDescription,logDate) VALUES (%s,%s)",(self.logDescription,date))
         mysql.connection.commit()
         cur.close()
+    
+    @classmethod
+    def searchAllLogs(cls):         
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM logs")
+        data = cur.fetchall()
+        cur.close()
+    
+        return data

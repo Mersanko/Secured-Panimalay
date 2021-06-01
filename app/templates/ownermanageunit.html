@@ -202,7 +202,7 @@
 	</div>
 	<!--End of search form-->
 	<div class="container-xl">
-		<div id="editBoardingHouseName">
+		<div id="editBoardingHouseName" style="margin-bottom: -1%;">
 			<h1 style="color: black; margin-top: 3%; font-size: 25px;">{{bhData.2}}<i class="fa fa-pencil"
 					style="font-size: 20px; padding-left: 0.5%;"></h1></i>
 		</div>
@@ -218,6 +218,22 @@
 				</div>
 			</form>
 		</div>
+
+		<!--Flash message-->
+		<div id="flashMessage">
+			{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+			{% for category,message in messages %}
+			<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+				{{ message }}
+				<button type="button" id="closeFlashMessage" class="close" data-dismiss="alert"
+					aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
+		</div>
+		<!--End of flash message-->
 
 		<div class="table-responsive">
 			<div class="table-wrapper">
@@ -264,8 +280,9 @@
 
 			</div>
 		</div>
-
+		
 	</div>
+	
 	<!--End of table-->
 	<!--Edit unit modal-->
 	<div id="updateUnitModal{{i.1}}" class="modal fade">
@@ -420,19 +437,24 @@
 				</form>
 			</div>
 		</div>
+		
 	</div>
+	
 	<!--End of add unit modal-->
 
 
 	</table>
-
-	<div class="float-right" style="margin-top: 2%;">
-		<br>
+	<!--<div class="float-right" style="margin-top: 4%;">
 		<a href="{{url_for('dashboard')}}"><button class="btn" type="submit"
 				style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left"
-					style="margin-right: 5%;"></i>Go back to dashboard</button></a>
-	</div>
+					style="margin-right: 10%;"></i>Go back to dashboard</button></a>
+	</div>-->
 </body>
+<div class="float-right" style="margin-top: 4%; margin-right: -2%;">
+	<a href="{{url_for('dashboard')}}"><button class="btn" type="submit"
+			style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left"
+				style="margin-right: 10%;"></i>Go back to dashboard</button></a>
+</div>
 <script>
 	$(document).ready(function () {
 		$("#editBoardingHouseNameForm").hide();

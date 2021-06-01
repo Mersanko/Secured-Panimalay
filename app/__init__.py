@@ -3,10 +3,10 @@ from flask_mysql_connector import MySQL
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY
 from OpenSSL import SSL
 from datetime import timedelta
-from flask_ipban import IpBan
+
 
 app = Flask(__name__)
-ip_ban = IpBan(app)
+
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['MYSQL_USER'] = DB_USERNAME
 app.config['MYSQL_PASSWORD'] = DB_PASSWORD

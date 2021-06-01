@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    
   </head>
 
 <style>
@@ -34,7 +34,7 @@ body {
 <div class="container">
   <a href="#" class="navbar-brand" style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N I M A L A Y</strong></a>		
     <ul class="navbar-nav" style="margin-right: -10%;">
-      <a href="adminlogin" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
+      <a href="{{url_for('adminLogout')}}" class="nav-link" style="font-size: 18px;">Logout <i class="fa fa-sign-out"></i></a>
     </ul>
 </div>
 </nav>
@@ -52,6 +52,24 @@ body {
 </div>
 </div>
 <!--End of dashboard-->
+
+<!--Flash message-->
+<div class="container">
+<div id="flashMessage">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category,message in messages %}
+  <div id="flahMessage" name="flashMessage" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" id="closeFlashMessage" name="closeFlashMessage" class="close" data-dismiss="alert"
+          aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
+</div>
+<!--End of flash message-->
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container">
@@ -100,6 +118,13 @@ body {
 </div>
 <!-- End of dashboard -->
 </body>
+<script>
+  $(document).ready(function(){
+    $("#closeFlashMessage").on('click',function(){
+      $("#flashMessage").hide();
+    })
+  });
+</script>
 </html>
                                             
 

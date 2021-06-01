@@ -258,6 +258,24 @@
 </div>
 <!--End of search form-->
 
+<!--Flash message-->
+<div class="container">
+<div id="flashMessage">
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+	{% for category,message in messages %}
+	<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+		{{ message }}
+		<button type="button" id="closeFlashMessage" class="close" data-dismiss="alert"
+			aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	</div>
+	{% endfor %}
+	{% endif %}
+	{% endwith %}
+</div>
+</div>
+<!--End of flash message-->
+
 <!--Table -->
 <div class="container-xl">
 	<div class="table-responsive">

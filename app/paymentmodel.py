@@ -41,4 +41,36 @@ class payment():
             data = []
             cur.close()
             return data
+    
+    @classmethod
+    def searchAllPayments(cls):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT payments.paymentNo,payments.userID,payments.bhID,payments.amount,payments.paymentDate,profiles.firstName,profiles.lastName,boardingHouses.boardingHouseName
+                    FROM payments 
+                    INNER JOIN profiles ON payments.userID=profileID
+                    INNER JOIN boardinghouses ON payments.bhID=boardinghouses.BHID
+                            ORDER BY paymentNo''')
+        data = cur.fetchall()
+        if data!=None:
+            cur.close()
+            return data
+        else:
+            data = []
+            cur.close()
+            return data
         
+    @classmethod
+    def updatePayment(cls,paymentNo,amount,paymentDate):
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE payments SET amount=%s,paymentDate=%s WHERE paymentNo=%s",(amount,paymentDate,paymentNo))
+        mysql.connection.commit()
+        cur.close()
+    
+    @classmethod
+    def deletePayment(cls,paymentNo):
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM payments WHERE paymentNo=%s",(paymentNo,))
+        mysql.connection.commit()
+        cur.close()
+    
+    

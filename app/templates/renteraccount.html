@@ -101,7 +101,7 @@
             <a href="#" class="navbar-brand"
                 style="font-family: Arial, Helvetica, sans-serif; font-size: 23px;"><strong><img
                         src="{{url_for('static', filename = 'panimalay-114x114.png')}}" style="margin-left: -50%;">P A N
-                    I M A L A Y</strong></a>
+                    I M A L A Y A</strong></a>
             <ul class="navbar-nav" style="margin-right: -10%;">
                 <a href="{{url_for('logout')}}" class="nav-link" style="font-size: 18px;">Logout <i
                         class="fa fa-sign-out"></i></a>
@@ -133,13 +133,14 @@
             <div class="col-lg-4">
                 <!--profile card-->
                 <div class="profile">
-                    <div class="card" style="width: 360px;">
+                    <div class="card" style="width: 420px;">
                         <div class="card-body text-center rounded-top" style="background-color: #4A707A;">
                             <div class="user-box">
                                 <img src="{{url_for('static', filename = 'mersan.jpg')}}" alt="user avatar">
                             </div>
                             <h5 class="mb-1 text-white">{{data.4}} {{data.5}}</h5>
                             <h6 class="text-light">@{{data.1}}</h6>
+                            <h6 class="text-light">id:{{data.0}}</h6>
                         </div>
                         <div class="card-body">
                             <ul class="list-group shadow-none">
@@ -148,7 +149,7 @@
                                         <i class="fa fa-phone-square"></i>
                                     </div>
                                     <div class="list-details">
-                                        <span>{{data.9}}</span>
+                                        <span>{{data.9}} <i class="fa fa-check-circle" style="color: blue;"></i></span>
                                         <small>Phone Number</small>
                                     </div>
                                 </li>
@@ -168,7 +169,7 @@
                 <!--End of profile card-->
             </div>
             <div class="col-lg-8">
-                <div class="card">
+                <div class="card" style="margin-left: 7%;">
                     <div class="card-body">
                         <!--Tab pills-->
                         <ul class="nav nav-pills nav-justified">

@@ -1,5 +1,6 @@
+from config import ADMIN_PASSWORD
 from logging import log
-from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify,abort
+from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify,abort,make_response
 from datetime import datetime
 import random
 from flask_ipban.ip_ban import IpBan
@@ -18,18 +19,14 @@ import app.reservationmodel as reservations
 import app.rentermodel as renters
 import app.logsmodel as logs    
 
+
 def loginRequired():
     if "accountInfo" in session:
         return True
     else:
         return False
             
-        
-
-@app.route('/')
-@app.route('/home')
-def home():
-    return render_template('adminlogin.html')
+ 
 
 
 @app.route('/create/account', methods=['POST'])
@@ -99,14 +96,17 @@ def login():
 
         verification = accounts.account()
         verificationResult = verification.login(usernameOrEmail, password)
-
         if verificationResult == "Invalid login credentials":
             return redirect(
                 url_for('signin',
                         usernameInput=usernameOrEmail,
                         passwordInput=password))
+        elif verificationResult==None:
+              return redirect(
+                url_for('signin'))
         else:
             session['accountInfo'] = verificationResult
+            print(session['accountInfo'][1])
             description = "{} signed in".format(session['accountInfo'][1])
             log = logs.log(description)
             log.addLogs()
@@ -182,6 +182,9 @@ def changeBoardingHouseName():
             userID = request.form.get('userID')
             bh = boardingHouses.boardingHouse()
             bh.changeBoardingHouseName(userID, newBoardingHouseName)
+            description = "{} changes its boarding house name to {}".format(session['accountInfo'][1],newBoardingHouseName)
+            log = logs.log(description)
+            log.addLogs()
         return redirect(url_for('manageUnits', userID=userID))
     else:
         return redirect(url_for("signin"))
@@ -210,7 +213,11 @@ def addUnits():
                                             cityOrMunicipality, province)
             unitLocation.addLocation()
 
-        return redirect(url_for('manageUnits'))
+            description = "{} added a new unit to its boarding house".format(session['accountInfo'][1])
+            log = logs.log(description)
+            log.addLogs()
+            msg = flash("Well Done! You've successfully added a new unit.","success")
+        return redirect(url_for('manageUnits',msg=msg))
     else:
         return redirect(url_for("signin"))
 
@@ -237,7 +244,11 @@ def updateUnits(unitID):
             unitLocation = locations.location()
             unitLocation.updateLocation(unitID, street, barangay,
                                         cityOrMunicipality, province)
-
+            
+            description = "{} updated one of its unit {} info".format(session['accountInfo'][1],unitID)
+            log = logs.log(description)
+            log.addLogs()
+            
         return redirect(url_for('manageUnits', userID=userID))
     else:
         return redirect(url_for("signin"))
@@ -251,6 +262,9 @@ def deleteUnit(unitID):
             userID = request.form.get('userID')
             unit = units.unit()
             unit.deleteUnit(unitID)
+            description = "{} deleted unit {}".format(session['accountInfo'][1],unitID)
+            log = logs.log(description)
+            log.addLogs()
         return redirect(url_for('manageUnits', userID=userID))
     else:
         return redirect(url_for("signin"))
@@ -317,6 +331,9 @@ def updateProfileAndContact():
             session.clear()
             accountInfo = account.login(username, password)
             session['accountInfo'] = accountInfo
+            description = "{} update its account info".format(session['accountInfo'][1])
+            log = logs.log(description)
+            log.addLogs()
             msg = flash("Well Done! You've successfully updated your profile information.","success")
             return redirect(url_for('accountInfo',msg=msg ))
     else:
@@ -333,6 +350,9 @@ def changePassword():
             newPassword = request.form.get('newPass')
             account = accounts.account()
             account.changePassword(session['accountInfo'][0],oldPassword, newPassword)
+            description = "{} update its password".format(session['accountInfo'][1])
+            log = logs.log(description)
+            log.addLogs()
             msg = flash("Well Done! You've successfully updated your profile information.","success")
         return redirect(url_for('accountInfo',msg=msg))
     return redirect(url_for("signin"))
@@ -379,7 +399,8 @@ def addPayment():
             description = "{} pays P{} to {} ".format(renter,amount,bhID)
             log= logs.log(description)
             log.addLogs()
-        return redirect(url_for('managePayment'))
+            msg = flash("Well Done! You've successfully added a payment.","success")
+        return redirect(url_for('managePayment',msg=msg))
     else:
         return redirect(url_for("signin"))
 
@@ -482,6 +503,9 @@ def cancelReservation(reservationNo):
     if sessionChecker==True:
         reserve = reservations.reservation()
         reserve.cancelReservation(reservationNo) 
+        description = "{} cancels reservation no.{}".format(session['accountInfo'][1],reservationNo)
+        log = logs.log(description)
+        log.addLogs()
         return redirect(url_for('renterPendingReservation'))
     else:
          return redirect(url_for("signin"))
@@ -494,6 +518,9 @@ def deleteReservation(reservationNo):
     if sessionChecker==True:
         reserve = reservations.reservation()
         reserve.deleteReservation(reservationNo) 
+        description = "{} deleted reservation no.{} ".format(session['accountInfo'][1],reservationNo)
+        log = logs.log(description)
+        log.addLogs()
         return redirect(url_for('renterPendingReservation'))
     else:
         return redirect(url_for("signin"))
@@ -505,6 +532,9 @@ def confirmLeaveRequest(userID):
     if sessionChecker==True:
         leaveRequest = renters.renter()
         leaveRequest.confirmLeaveRequest(userID)
+        description = "Leave request of {} was approved by the boarding house owner ".format(session['accountInfo'][1])
+        log = logs.log(description)
+        log.addLogs()
         return redirect(url_for('manageTenants'))
     else:
         return redirect(url_for("signin"))
@@ -515,6 +545,9 @@ def declineLeaveRequest(userID):
     if sessionChecker==True:
         leaveRequest = renters.renter()
         leaveRequest.declineLeaveRequest(userID)
+        description = "Leave request of {} was declined by the boarding house owner ".format(session['accountInfo'][1])
+        log = logs.log(description)
+        log.addLogs()
         return redirect(url_for('manageTenants'))
     else:
         return redirect(url_for("signin"))
@@ -580,6 +613,14 @@ def acceptRentRequest(reservationNo,userID,unitID):
         reservation = reservations.reservation()
         reservation.acceptReservation(reservationNo)
         renter.addRenter()
+        
+        description = "Rent request of {} was approved by the boarding house owner".format(session['accountInfo'][0])
+        log= logs.log(description)
+        log.addLogs()
+        
+        description = "{} started renting for unit: {}".format(session['accountInfo'][0],unitID)
+        log= logs.log(description)
+        log.addLogs()
         return redirect(url_for('manageTenants'))
     else:
         return redirect(url_for("signin"))
@@ -590,6 +631,11 @@ def declineRentRequest(reservationNo):
     if sessionChecker==True:
         reservation = reservations.reservation()
         reservation.declineReservation(reservationNo)
+        
+        description = "Rent request no.{} was declined by the boarding house owner".format(reservationNo)
+        log= logs.log(description)
+        log.addLogs()
+        
         return redirect(url_for('manageTenants'))
     else:
         return redirect(url_for("signin"))
@@ -617,6 +663,9 @@ def requestToLeave(userID,unitID):
     if sessionChecker==True:
         renter = renters.renter()
         renter.requestRenterLeave(userID,unitID)
+        description = "{} sents a leave request for the boarding house owner".format(session['accountInfo'][1])
+        log= logs.log(description)
+        log.addLogs()
         return redirect(url_for('rentedUnit'))
     else:
         return redirect(url_for("signin"))
@@ -629,6 +678,10 @@ def cancelRequestToLeave(userID,unitID):
     if sessionChecker==True:
         renter = renters.renter()
         renter.cancelOrDeclineRenterLeave(userID,unitID)
+        
+        description = "{} cancel its leave request".format(session['accountInfo'][1])
+        log= logs.log(description)
+        log.addLogs()
         return redirect(url_for('rentedUnit'))
     else:
         return redirect(url_for("signin"))
@@ -670,7 +723,9 @@ def sendEmailVerification():
         emailVerification = contacts.contact()
         emailVerification.emailAlert("Panimalay Email Verification",msg,session['accountInfo'][8])
         
-        
+        description = "Panimalay sents an email verification code to {} r".format(session['accountInfo'][8])
+        log= logs.log(description)
+        log.addLogs()
         return jsonify(result=code)
         
     return redirect(url_for("signin"))
@@ -699,6 +754,10 @@ def sendPhoneNumberVerification():
         emailVerification = contacts.contact()
         emailVerification.smsAlert(code,session['accountInfo'][9])
         
+        
+        description = "Panimalay sents an sms verification code to {} r".format(session['accountInfo'][9])
+        log= logs.log(description)
+        log.addLogs()
         
         return jsonify(result=code)
         
@@ -800,42 +859,215 @@ def adminLoginCheckCredentials():
     else:
         if request.method=="POST":
             password = request.form.get("password",0,str)
-            if password=="jacjac29":
-                return redirect(url_for('adminDashboard'))
+            if password==ADMIN_PASSWORD:
+                msg = flash("Awesome! You've successfully login.","success")
+                session['adminLogin'] = 1
+                return redirect(url_for('adminDashboard',msg=msg))
             else:
-                
                 return redirect(url_for('adminLogin'))
-    
+            
 @app.route('/admin/account')
 def adminAccount():
-    trusted_proxies_and_IP = ['127.0.0.1']
-    if request.remote_addr not in trusted_proxies_and_IP:
-        abort(403)  # Forbidden
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            return render_template("adminaccount.html")
     else:
-        return render_template("adminaccount.html")
+        return render_template('errorpage.html')
+
+"""
+@app.route('/admin/account/manage/password', methods=['POST'])
+def updateAdminAccount():
+    if 'adminLogin' in session:
+        if request.method == 'POST':
+            trusted_proxies_and_IP = ['127.0.0.1']
+            if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            currentPass = request.form.get('currentPass')
+            newPass = request.form.get('newPass')
+            secretAnswer = request.form.get('secretAnswer')
+            if secretQuestion==ADMIN_SECRET_QUESTION:
+                return redirect(url_for('adminAccount'))
+    else:
+        return render_template('errorpage.html') 
+"""
     
 @app.route('/admin/logs')
 def adminLogs():
-    trusted_proxies_and_IP = ['127.0.0.1']
-    if request.remote_addr not in trusted_proxies_and_IP:
-        abort(403)  # Forbidden
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            return render_template("adminlogs.html")
     else:
-        return render_template("adminlogs.html")
-
+        return render_template('errorpage.html')  
+    
+@app.route('/fetch/logs')
+def fetchLogs():
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            searchAllLogs = logs.log()
+            data = searchAllLogs.searchAllLogs()
+            return jsonify(result=data)
+    else:
+        return render_template('errorpage.html')  
+       
 @app.route('/admin/manage/passwords')
 def adminManagePasswords():
-    trusted_proxies_and_IP = ['127.0.0.1']
-    if request.remote_addr not in trusted_proxies_and_IP:
-        abort(403)  # Forbidden
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            return render_template("adminmanagepasswords.html")
     else:
-        return render_template("adminmanagepasswords.html")
+        return render_template('errorpage.html')  
+
+"""
+@app.route('/manage/passwords', methods=["POST"])
+def managePasswords():
+    if 'adminLogin' in session:
+        if request.method == 'POST':
+            trusted_proxies_and_IP = ['127.0.0.1']
+            if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+
+
+"""
 
 @app.route('/admin/manage/payments')
 def adminManagePayments():
-    trusted_proxies_and_IP = ['127.0.0.1']
-    if request.remote_addr not in trusted_proxies_and_IP:
-        abort(403)  # Forbidden
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            paymentRecord = payments.payment()
+            paymentRecord = paymentRecord.searchAllPayments()
+            return render_template("adminmanagepayments.html",payments=paymentRecord)
     else:
-        return render_template("adminmanagepayments.html")
+        return render_template('errorpage.html')  
+    
 
-   
+@app.errorhandler(404)
+def not_found(error):
+    resp = make_response(render_template('errorpage.html'), 404)
+    resp.headers['header'] = 'ERROR'
+    return resp
+
+@app.route('/update/payment/record',methods=["POST"])
+def updatePaymentRecord():
+    if 'adminLogin' in session:
+        if request.method == "POST":
+            trusted_proxies_and_IP = ['127.0.0.1']
+            if request.remote_addr not in trusted_proxies_and_IP:
+                abort(403)  # Forbidden
+            else:
+                paymentNo = request.form.get("paymentNo")
+                amount = request.form.get("paymentAmount")
+                date = request.form.get("paymentDate")
+                paymentRecord = payments.payment()
+                paymentRecord.updatePayment(paymentNo,amount,date)
+                return redirect(url_for("adminManagePayments")) 
+    else:
+        return render_template('errorpage.html')  
+
+@app.route('/update/payment/record/email/verification/<string:userID>/<string:bhID>')
+def updatePaymentRecordEmailVerication(userID,bhID):
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            #code for renter
+            renterCode = contacts.contact()
+            renterEmail = renterCode.findEmailUsingUserID(userID)
+            renterCode = renterCode.sendEmailVerificationCodeForPaymentUpdate(renterEmail[0][1])
+            
+            #code for owner
+            ownerCode =  contacts.contact()
+            ownerEmail = ownerCode.findEmailUsingbhID(bhID)
+            ownerCode =  ownerCode.sendEmailVerificationCodeForPaymentUpdate(ownerEmail[1])
+            return jsonify(result=[renterCode,ownerCode]) 
+    else:
+        return render_template('errorpage.html')
+
+
+@app.route('/admin/logout')
+def adminLogout():
+    session.pop('adminLogin')
+    return redirect(url_for('adminLogin'))
+
+
+@app.route('/edit/payments/<int:paymentNo>',methods=['POST'])
+def editPayments(paymentNo):
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if 'adminLogin' in session:
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            if request.method == "POST":
+                amount = request.form.get('amount')
+                date =  request.form.get('paymentDate')
+                payment = payments.payment()
+                payment.updatePayment(paymentNo,amount,date)
+                return redirect(url_for('adminManagePayments'))
+            
+    else:
+        return render_template('errorpage.html')
+
+
+@app.route('/delete/payments/record/email/verification/<string:userID>/<string:bhID>')
+def deletePaymentRecordEmailVerication(userID,bhID):
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if 'adminLogin' in session:
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            #code for renter
+            renterCode = contacts.contact()
+            renterEmail = renterCode.findEmailUsingUserID(userID)
+            renterCode = renterCode.sendEmailVerificationCodeForPaymentUpdate(renterEmail[0][1])
+            
+            #code for owner
+            ownerCode =  contacts.contact()
+            ownerEmail = ownerCode.findEmailUsingbhID(bhID)
+            ownerCode =  ownerCode.sendEmailVerificationCodeForPaymentUpdate(ownerEmail[1])
+            return jsonify(result=[renterCode,ownerCode]) 
+            
+    else:
+        return render_template('errorpage.html')
+    
+@app.route('/delete/payments/<int:paymentNo>',methods=['POST'])
+def deletePayments(paymentNo):
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if 'adminLogin' in session:
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            payment = payments.payment()
+            payment.deletePayment(paymentNo)
+            return redirect(url_for('adminManagePayments'))
+            
+    else:
+        return render_template('errorpage.html')
+
+'''
+    
+@app.errorhandler(404)
+def page_not_found(e):
+ return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+ return render_template('500.html'), 500
+
+'''
