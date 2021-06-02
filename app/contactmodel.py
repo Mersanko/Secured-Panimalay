@@ -142,6 +142,45 @@ class contact():
         return code
     
     @classmethod
+    def sendEmailVerificationCodeForgotPassword(cls, to):
+        msg = EmailMessage()
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        body = 'Code: {}'.format(code)
+        msg.set_content(body)
+
+        msg['subject'] = "Email Verification"
+        msg['to'] = to
+
+        user = "mersanko1@gmail.com"
+        msg['from'] = user
+        password = "nbihpgiycoerznfg"
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(user, password)
+        server.send_message(msg)
+        server.quit()
+    
+        return code
+    
+    @classmethod
+    def smsAlertForgotPassword(cls,phoneNumber):
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        msg = code
+        locationBasesPhoneNumber = '+63'+phoneNumber[1:]
+        ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
+        AUTH_TOKEN = '2d2c283b72d7687b2237d6f3638eeeec'
+
+        client = Client(ACCOUNT_SSID,AUTH_TOKEN )
+
+        message = client.messages.create(
+            messaging_service_sid='MG76b374860c5a03f5726a8396f7040b8d',
+            body=msg,
+            to=locationBasesPhoneNumber
+
+        )
+        return code
+    @classmethod
     def findEmailUsingbhID(cls,BHID):
         cur = mysql.connection.cursor()
         cur.execute('''SELECT boardinghouses.ownersID,contacts.email,boardinghouses.BHID
@@ -161,3 +200,14 @@ class contact():
         cur.close()
     
         return data
+    
+    @classmethod
+    def checkIfExist(cls,email,phoneNumber):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT * FROM contacts WHERE email=%s OR phoneNumber=%s''',(email,phoneNumber))
+        data = cur.fetchall()
+        cur.close()
+    
+        return data
+    
+    

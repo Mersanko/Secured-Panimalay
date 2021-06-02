@@ -1,4 +1,4 @@
-from config import ADMIN_PASSWORD
+from config import ADMIN_CODES
 from logging import log
 from flask import Flask, flash, json, render_template, redirect, request, url_for, session, jsonify,abort,make_response
 from datetime import datetime
@@ -86,7 +86,53 @@ def createAccount():
 def signin():
     return render_template('signin.html')
 
+@app.route('/forgot/password')
+def forgotPassword():
+    return render_template('forgotpassword.html')
 
+
+@app.route('/forgot/password/send/code',methods=["POST"])
+def forgotPasswordSendCode():
+    if request.method=="POST":
+        contactType =  request.form.get('emailOrPhoneNumber') 
+        contact = request.form.get('contact') 
+        code = contacts.contact()
+        checker = code.checkIfExist(contact,contact)
+        if checker!=None or len(checker)!=0 :
+            if contactType=="email":
+                code = code.sendEmailVerificationCodeForgotPassword(contact)
+                return render_template('forgotpasswordverification.html',code=code,contact=contact)
+
+            else:
+                code = code.smsAlertForgotPassword(contact)
+                return render_template('forgotpasswordverification.html',code=code,contact=contact)
+
+        else:
+            return '<h1>NO ACCOUNT IS DETECTED</h1>'
+            
+
+@app.route('/set/new/password/<string:contact>')
+def setNewPassword(contact):
+    return render_template('setnewpassword.html',contact=contact)
+
+@app.route('/change/password/force/<string:contact>',methods=['POST'])
+def changePasswordForce(contact):
+    if request.method == "POST":
+        password = request.form.get("newPassword") 
+        checkContact= contacts.contact()
+        checkContact = checkContact.checkIfExist(contact,contact)
+        account = accounts.account()
+        data = account.forceChangePassword(checkContact[0][0],password)
+        
+        verificationResult = account.login(data[0][1], password)
+        
+        session['accountInfo'] = verificationResult
+        description = "{} signed in".format(session['accountInfo'][1])
+        log = logs.log(description)
+        log.addLogs()
+        flash("Welcome! You've successfully login.","success")
+        return redirect(url_for('dashboard'))
+  
 @app.route('/login', methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -106,7 +152,6 @@ def login():
                 url_for('signin'))
         else:
             session['accountInfo'] = verificationResult
-            print(session['accountInfo'][1])
             description = "{} signed in".format(session['accountInfo'][1])
             log = logs.log(description)
             log.addLogs()
@@ -576,8 +621,8 @@ def ownerReservation():
         return redirect(url_for("signin"))
 
 
-@app.route('/profile/<string:username>')
-def profile(username):
+@app.route('/profile')
+def profile():
     sessionChecker = loginRequired()
     if sessionChecker==True:
         return render_template('renterownerprofiles.html')
@@ -653,6 +698,14 @@ def rentedUnit():
         else:
             unit = unitInfo.rentedUnitInfo(info[0][1])
             return render_template('renterrentedunit.html',info=info,unit=unit,date=str(info[0][2]),accountInfo=session['accountInfo'])
+    else:
+        return redirect(url_for("signin"))
+
+@app.route('/unit')
+def unit():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        return render_template('unit.html')
     else:
         return redirect(url_for("signin"))
 
@@ -836,12 +889,14 @@ def phoneNumberCredentialUniquenessTest():
 
 @app.route('/admin/dashboard')
 def adminDashboard():
-    trusted_proxies_and_IP = ['127.0.0.1']
-    if request.remote_addr not in trusted_proxies_and_IP:
-        abort(403)  # Forbidden
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            return render_template('admindashboard.html')
     else:
-        return render_template('admindashboard.html')
-
+        return render_template('errorpage.html')
 
 @app.route('/admin/login')
 def adminLogin():
@@ -851,6 +906,14 @@ def adminLogin():
     else:
         return render_template('adminlogin.html')
 
+@app.route('/admin/random/code/generator')
+def adminRandomCodeGenarator():
+    trusted_proxies_and_IP = ['127.0.0.1']
+    if request.remote_addr not in trusted_proxies_and_IP:
+        abort(403)  # Forbidden
+    else:
+        return render_template('adminrandomcodegenerator.html',codes=ADMIN_CODES)
+
 @app.route('/admin/login/check/credentials',methods=["POST"])
 def adminLoginCheckCredentials():
     trusted_proxies_and_IP = ['127.0.0.1']
@@ -859,7 +922,8 @@ def adminLoginCheckCredentials():
     else:
         if request.method=="POST":
             password = request.form.get("password",0,str)
-            if password==ADMIN_PASSWORD:
+            password = [password]
+            if password in ADMIN_CODES:
                 msg = flash("Awesome! You've successfully login.","success")
                 session['adminLogin'] = 1
                 return redirect(url_for('adminDashboard',msg=msg))
@@ -1005,7 +1069,7 @@ def updatePaymentRecordEmailVerication(userID,bhID):
 def adminLogout():
     session.pop('adminLogin')
     return redirect(url_for('adminLogin'))
-
+    
 
 @app.route('/edit/payments/<int:paymentNo>',methods=['POST'])
 def editPayments(paymentNo):
@@ -1019,8 +1083,8 @@ def editPayments(paymentNo):
                 date =  request.form.get('paymentDate')
                 payment = payments.payment()
                 payment.updatePayment(paymentNo,amount,date)
-                return redirect(url_for('adminManagePayments'))
-            
+                msg = flash("Well Done! You've successfully updated the payment.","success")
+                return redirect(url_for('adminManagePayments',msg=msg))
     else:
         return render_template('errorpage.html')
 
@@ -1059,6 +1123,33 @@ def deletePayments(paymentNo):
             
     else:
         return render_template('errorpage.html')
+
+
+@app.route('/admin/list/of/bh')
+def adminListOfBh():
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+
+            return render_template("adminlistofbh.html")
+    else:
+        return render_template('errorpage.html')
+
+@app.route('/admin/list/of/users')
+def adminListOfUsers():
+    if 'adminLogin' in session:
+        trusted_proxies_and_IP = ['127.0.0.1']
+        if request.remote_addr not in trusted_proxies_and_IP:
+            abort(403)  # Forbidden
+        else:
+            myListOfUsers = accounts.account()
+            myListOfUsers = myListOfUsers.searchAllAccountsForAdmin()
+            return render_template("adminlistofusers.html",myListOfUsers=myListOfUsers)
+    else:
+        return render_template('errorpage.html')
+
 
 '''
     

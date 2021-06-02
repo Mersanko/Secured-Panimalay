@@ -78,6 +78,19 @@ class account():
             cur.close()
             return data
         
+    @classmethod
+    def searchAllAccountsForAdmin(cls):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM accounts")
+        data = cur.fetchall()
+        if data!=None:
+            cur.close()
+            return data
+        else:
+            data = []
+            cur.close()
+            return data
+        
     
     @classmethod
     def usernameUniquenessTest(cls,providedUsername):
@@ -91,4 +104,14 @@ class account():
         else:
             cur.close()
             return "Taken"
+    
+    @classmethod
+    def forceChangePassword(cls,userID,password):
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE accounts SET  password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512))) WHERE userID=%s",(password,userID))
+        mysql.connection.commit()
         
+        cur.execute("SELECT * FROM accounts WHERE userID=%s",(userID,))
+        data = cur.fetchall()
+        cur.close()
+        return data

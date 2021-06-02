@@ -167,6 +167,24 @@ min-width: 100px;
     </div>
 </nav>
 
+ <!--Flash message-->
+<div class="container">
+<div id="flashMessage">
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+	{% for category,message in messages %}
+	<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+		{{ message }}
+		<button type="button" id="closeFlashMessage" class="close" data-dismiss="alert"
+			aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	</div>
+	{% endfor %}
+	{% endif %}
+	{% endwith %}
+</div>
+</div>
+<!--End of flash message-->
+
 <div class="container-xl">
 	<div class="table-responsive">
 		<div class="table-wrapper">
@@ -295,7 +313,7 @@ min-width: 100px;
 
 <div class="container">
 	<div class="float-right" style="margin-top: 2%;">
-		<a href="{{url_for('adminDashboard')}}"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black; width: 220px;"><i class="fa fa-arrow-left" style="margin-right: 10%;"></i>Go back to dashboard</button></a>
+		<a href="{{url_for('adminDashboard')}}"><button class="btn" type="submit" style="background-color: #C2C8C5; color: black; width: 220px; margin-right: -11px;"><i class="fa fa-arrow-left" style="margin-right: 3%;"></i>Go back to dashboard</button></a>
 	</div>      
 </div>
 </body>

@@ -14,5 +14,6 @@ app.config['MYSQL_DATABASE'] = DB_NAME
 app.config['MYSQL_HOST'] = DB_HOST
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=120)
 
+
 mysql = MySQL(app)
 from app import routes

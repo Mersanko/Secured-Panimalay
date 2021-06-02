@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Fli<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -184,7 +184,7 @@
                     <thead>
                         <tr>
                             <th>Unit ID</th>
-                            <th>Owner</th>
+                            <th>Renter</th>
                             <th>BH Name</th>
                             <th>Amount Rented</th>
                             <th>Date Rented</th>
@@ -196,8 +196,8 @@
                         {% for payment in myPayments %}
                         <tr>
                             <td>{{payment.0}}</td>
-                            <td><a href=""> {{payment.6}} {{payment.7}}</a></td>
-                            <td><a href="">{{payment.3}}</a></td>
+                            <td><a href="http://127.0.0.1:5000/profile"> {{payment.6}} {{payment.7}}</a></td>
+                            <td><a href="http://127.0.0.1:5000/profile">{{payment.3}}</a></td>
                             <td>PHP {{payment.4}}</td>
                             <td>{{payment.5}}</td>
                         </tr>

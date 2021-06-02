@@ -31,7 +31,7 @@
                     $('#resultTable > tbody').empty();
                     var result = data.result;
                     $.each( result, function( index, value ){
-                        $('#resultTable').append("<tr>"+"<td>"+ value[7] +"</td>" + "<td>"+ value[8]+","+value[9]+","+value[10]+","+value[11] +"</td>"+"<td>"+ value[3] +"</td>"+ "<td>"+ value[5] +"</td>"+ "<td>"+ value[4] +"</td>"+ "<td>"+"<a href='"+'http://127.0.0.1:5000/rent/request/'+value[1]+"' class='btn btn-success'>Rent</a><a href='"+'http://127.0.0.1:5000/view/unit/'+value[1]+"' class='btn btn-primary' style='margin-left:20px;'>View</button>"+"</td>"+"<tr>");
+                        $('#resultTable').append("<tr>"+"<td>"+ value[7] +"</td>" + "<td>"+ value[8]+","+value[9]+","+value[10]+","+value[11] +"</td>"+"<td>"+ value[3] +"</td>"+ "<td>"+ value[5] +"</td>"+ "<td>"+ value[4] +"</td>"+ "<td>"+"<a href='"+'http://127.0.0.1:5000/rent/request/'+value[1]+"' class='btn btn-success'>Rent</a><a href='http://127.0.0.1:5000/unit' target='_blank' class='btn btn-primary' style='margin-left:20px;'>View</button>"+"</td>"+"<tr>");
                     });
                 
                     
