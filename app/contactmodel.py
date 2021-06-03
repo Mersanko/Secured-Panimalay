@@ -71,7 +71,7 @@ class contact():
     def smsAlert(cls,msg,phoneNumber):
         locationBasesPhoneNumber = '+63'+phoneNumber[1:]
         ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
-        AUTH_TOKEN = '2d2c283b72d7687b2237d6f3638eeeec'
+        AUTH_TOKEN = 'bff7dd28253332d82a8487e174717a86'
 
         client = Client(ACCOUNT_SSID,AUTH_TOKEN )
 
@@ -162,6 +162,46 @@ class contact():
         server.quit()
     
         return code
+
+    @classmethod
+    def sendEmailOTP(cls, to):
+        msg = EmailMessage()
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        body = 'Code: {}'.format(code)
+        msg.set_content(body)
+
+        msg['subject'] = "Email Verification"
+        msg['to'] = to
+
+        user = "mersanko1@gmail.com"
+        msg['from'] = user
+        password = "nbihpgiycoerznfg"
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(user, password)
+        server.send_message(msg)
+        server.quit()
+    
+        return code
+    
+    @classmethod
+    def sendOTPviaPhoneNumber(cls,phoneNumber):
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        msg = code
+        locationBasesPhoneNumber = '+63'+phoneNumber[1:]
+        ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
+        AUTH_TOKEN = 'bff7dd28253332d82a8487e174717a86'
+
+        client = Client(ACCOUNT_SSID,AUTH_TOKEN )
+
+        message = client.messages.create(
+            messaging_service_sid='MG76b374860c5a03f5726a8396f7040b8d',
+            body=msg,
+            to=locationBasesPhoneNumber
+
+        )
+        return code
     
     @classmethod
     def smsAlertForgotPassword(cls,phoneNumber):
@@ -180,6 +220,25 @@ class contact():
 
         )
         return code
+    
+    @classmethod
+    def smsAlertOTP(cls,phoneNumber):
+        code = ''.join(random.choice('0123456789') for _ in range(6))
+        msg = code
+        locationBasesPhoneNumber = '+63'+phoneNumber[1:]
+        ACCOUNT_SSID = 'AC816585e01c8d623ad0f35ebe31e6825f'
+        AUTH_TOKEN = '2d2c283b72d7687b2237d6f3638eeeec'
+
+        client = Client(ACCOUNT_SSID,AUTH_TOKEN )
+
+        message = client.messages.create(
+            messaging_service_sid='MG76b374860c5a03f5726a8396f7040b8d',
+            body=msg,
+            to=locationBasesPhoneNumber
+
+        )
+        return code
+    
     @classmethod
     def findEmailUsingbhID(cls,BHID):
         cur = mysql.connection.cursor()
@@ -210,4 +269,36 @@ class contact():
     
         return data
     
+
+    @classmethod
+    def unbindEmail(cls,email):
+        cur = mysql.connection.cursor()
+        cur.execute('''UPDATE contacts SET emailVerification=%s WHERE email=%s''',("N",email))
+        
+        cur.execute("SELECT * FROM contacts WHERE email=%s",(email,))
+        data = cur.fetchone()
+        if data[3]=="N" and data[4]=="N":
+            cur.execute('''UPDATE contacts SET 2FA=%s WHERE email=%s''',("N",email))
+        mysql.connection.commit()
+        cur.close()
+  
+    @classmethod
+    def unbindPhoneNumber(cls,phoneNumber):
+        cur = mysql.connection.cursor()
+        cur.execute('''UPDATE contacts SET phoneNumberVerification=%s WHERE  phoneNumber=%s''',("N",phoneNumber))
+        
+        cur.execute("SELECT * FROM contacts WHERE phoneNumber=%s",(phoneNumber,))
+        data = cur.fetchone()
+        if data[3]=="N" and data[4]=="N":
+            cur.execute('''UPDATE contacts SET 2FA=%s WHERE phoneNumber=%s''',("N",phoneNumber))
+        mysql.connection.commit()
+        cur.close()
+    
+    @classmethod
+    def check2FA(cls,contactID):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM contacts WHERE contactID=%s",(contactID,))
+        data = cur.fetchone()
+        cur.close()
+        return data[5]
     

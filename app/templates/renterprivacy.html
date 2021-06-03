@@ -59,6 +59,51 @@
             });
            
         </script>
+            <script type=text/javascript>
+              $(function() {
+                  $('a#sendVerificationCodeForUnbind').bind('click', function() {
+                  $.getJSON('/send/email/verification/code', {
+                  }, function(data) {
+                     var code = data['result'];
+                     console.log(data);
+                     $("#emailVerificationFormForUnbind").on("submit",function(e){
+                       e.preventDefault();
+                       var codeProvided = $("#verifyEmailForUnbind").val();
+                       if (code===codeProvided){
+                          e.currentTarget.submit();
+                       }
+                       else{
+                          alert("Invalid Verification Code");
+                       }
+                     })
+                  });
+                  return false;
+                  });
+              });
+  
+              $(function() {
+                  $('a#sendVerificationCodePhoneForUnbind').bind('click', function() {
+                  $.getJSON('/send/phone/number/verification/code', {
+                  }, function(data) {
+                     var code = data['result'];
+                     console.log(code);
+                     $("#phoneNumberVerificationFormForUnbind").on("submit",function(e){
+                       e.preventDefault();
+                       var codeProvided = $("#verifyMobileForUnbind").val();
+                       
+                       if (code===codeProvided){
+                          e.currentTarget.submit();
+                       }
+                       else{
+                          alert("Invalid Verification Code");
+                       }
+                     })
+                  });
+                  return false;
+                  });
+              });
+             
+          </script>
   </head>
 
 <style>
@@ -125,8 +170,10 @@ padding-left: 8px;
                   <div class="custom-control custom-switch" style="margin-left:-3%;">
                     {% if accountInfo.12 == "Y" %}
                     <a class="btn btn-danger" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Disable</a>
-                    {% elif  accountInfo.12 == "N"%}
+                    {% elif accountInfo.12 == "N" and (accountInfo.10=="Y" or accountInfo.11=="Y") %}
                     <a class="btn btn-success" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}">Enable</a>
+                    {% elif accountInfo.12 == "N" and accountInfo.10=="N" and  accountInfo.11=="N"%}
+                    <button class="btn btn-success" id="update2FAButton" name="update2FAButton" href="{{url_for('update2FA')}}" disabled>Enable</button>
                     {% endif %}
                     
                   </div>
@@ -143,6 +190,7 @@ padding-left: 8px;
                         <h6 class="mb-0">Email Verification 
                           {% if accountInfo.10 == "Y" %} 
                           <span><i class="fa fa-check-circle" style="color: blue;"></i></span>
+                          <a href="#emailverificationModalForUnbind" data-toggle="modal"><small>Unbind</small></a> 
                           {% endif %}
                         </h6>
                         <small class="text-muted">{{accountInfo.8}}</small>
@@ -158,6 +206,7 @@ padding-left: 8px;
                         <h6 class="mb-0">Mobile Verification
                           {% if accountInfo.11 == "Y" %} 
                           <span><i class="fa fa-check-circle" style="color: blue;"></i></span>
+                         <a href="#mobileverificationModalForUnbind" data-toggle="modal"><small>Unbind</small></a> 
                           {% endif %}
                         </h6>
                         <small class="text-muted">{{accountInfo.9}}</small>
@@ -194,6 +243,7 @@ padding-left: 8px;
 					<div class="form-group">
 						<label>Your Mobile Number</label>
 						<input type="text" class="form-control" id="verifyMobile" name="verifyMobile" value="" required="required">
+            <br>
             <a id="sendVerificationCodePhone" name="sendVerificationCodePhone" href="#"><h6 class="mb-0">Send Verification Code</h6></a>
             <h6 id="codeSentIndicatorPhone" name="codeSentIndicatorPhone" class="small">Verification code was sent, please check your phone inbox.</h6>
 					</div>
@@ -207,6 +257,34 @@ padding-left: 8px;
 	</div>
 </div> 
 <!-- End of mobile verification modal -->
+
+<!-- Mobile verification modal for unbind-->
+<div id="mobileverificationModalForUnbind" class="modal fade">
+	<div class="modal-dialog modal-login">
+		<div class="modal-content">
+			<form id="phoneNumberVerificationFormForUnbind" name="phoneNumberVerificationFormForUnbind" action="{{url_for('unbindVerifyPhoneNumber')}}" method="POST">
+				<div class="modal-header">				
+					<h4 class="modal-title">Mobile Verification</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">				
+					<div class="form-group">
+						<label>Your Mobile Number</label>
+						<input type="text" class="form-control" id="verifyMobileForUnbind" name="verifyMobileForUnbind" value="" required="required">
+            <br>
+            <a id="sendVerificationCodePhoneForUnbind" name="sendVerificationCodePhoneForUnbind" href="#"><h6 class="mb-0">Send Verification Code</h6></a>
+            <h6 id="codeSentIndicatorPhoneForUnbind" name="codeSentIndicatorPhoneForUnbind" class="small">Verification code was sent, please check your phone inbox.</h6>
+					</div>
+				</div>
+				<div class="modal-footer">
+          <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-primary" value="Verify">
+				</div>
+			</form>
+		</div>
+	</div>
+</div> 
+<!-- End of mobile verification modal for unbind -->
 
 <!-- Email verification modal -->
 <div id="emailverificationModal" class="modal fade" style="margin-top: 10%;">
@@ -235,15 +313,49 @@ padding-left: 8px;
 	</div>
 </div> 
 <!-- End of email verification modal -->
+
+<!-- Email verification modal for unbind-->
+<div id="emailverificationModalForUnbind" class="modal fade" style="margin-top: 10%;">
+	<div class="modal-dialog modal-login">
+		<div class="modal-content">
+			<form id="emailVerificationFormForUnbind" name="emailVerificationFormForUnbind" action="{{url_for('unbindVerifyEmail')}}" method="POST">
+				<div class="modal-header">				
+					<h4 class="modal-title">Email Verification</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">				
+					<div class="form-group">
+						<label>Your Email Address</label>
+						<input type="text" class="form-control" id="verifyEmailForUnbind" name="verifyEmailForUnbind" value="" required="required" placeholder="Enter Verification Code">
+            <br>
+            <a id="sendVerificationCodeForUnbind" name="sendVerificationCodeForUnbind" href="#"><h6 class="mb-0">Send Verification Code</h6></a>
+            <h6 id="codeSentIndicatorForUnbind" name="codeSentIndicatorForUnbind" class="small">Verification code was sent, please check your email.</h6>
+					</div>
+				</div>
+				<div class="modal-footer">
+          <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-primary" value="Verify">    
+				</div>
+			</form>
+		</div>
+	</div>
+</div> 
+<!-- End of email verification modal for unbind-->
+
 <input type="hidden" id="password" name="password" value="{{accountInfo.2}}">
 <input type="hidden" id="emailVerification" name="emailVerification" value="{{accountInfo.10}}">
 <input type="hidden" id="phoneNumberVerification" name="phoneNumberVerification" value="{{accountInfo.11}}">
+
+
+
 
 </body> 
 <script>
 $(document).ready(function(){
   $("#codeSentIndicator").hide();
   $("#codeSentIndicatorPhone").hide();
+  $("#codeSentIndicatorForUnbind").hide();
+  $("#codeSentIndicatorPhoneForUnbind").hide();
 
   $("#sendVerificationCode").click(function(){
     $("#sendVerificationCode").hide();
@@ -253,6 +365,17 @@ $(document).ready(function(){
   $("#sendVerificationCodePhone").click(function(){
     $("#sendVerificationCodePhone").hide();
     $("#codeSentIndicatorPhone").show();
+
+})
+  
+$("#sendVerificationCodeForUnbind").click(function(){
+    $("#sendVerificationCodeForUnbind").hide();
+    $("#codeSentIndicatorForUnbind").show();
+
+})
+  $("#sendVerificationCodePhoneForUnbind").click(function(){
+    $("#sendVerificationCodePhoneForUnbind").hide();
+    $("#codeSentIndicatorPhoneForUnbind").show();
 
 })
  

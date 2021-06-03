@@ -115,3 +115,24 @@ class account():
         data = cur.fetchall()
         cur.close()
         return data
+    
+    @classmethod
+    def checkAccountWithUsername(cls,username):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM accounts WHERE username=%s",(username,))
+        data = cur.fetchone()
+        cur.close()
+        return data
+    
+    @classmethod
+    def checkAccountWithPassword(cls,username,password):
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM accounts WHERE username=%s AND password=AES_ENCRYPT(%s,UNHEX(SHA2('kumsainibai',512)))",(username,password))
+        data = cur.fetchone()
+        cur.close()
+        return data
+        
+        
+        
+        
+        

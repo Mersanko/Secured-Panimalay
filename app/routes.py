@@ -143,20 +143,65 @@ def login():
         verification = accounts.account()
         verificationResult = verification.login(usernameOrEmail, password)
         if verificationResult == "Invalid login credentials":
-            return redirect(
-                url_for('signin',
-                        usernameInput=usernameOrEmail,
-                        passwordInput=password))
+            return render_template('signin.html',usernameOrEmail=usernameOrEmail,password=password)
         elif verificationResult==None:
               return redirect(
                 url_for('signin'))
         else:
-            session['accountInfo'] = verificationResult
-            description = "{} signed in".format(session['accountInfo'][1])
-            log = logs.log(description)
-            log.addLogs()
-            flash("Welcome! You've successfully login.","success")
-            return redirect(url_for('dashboard'))
+            contact = contacts.contact()
+            check2FA = contact.check2FA(verificationResult[0])
+            if check2FA=="N":
+                session['accountInfo'] = verificationResult
+                description = "{} signed in".format(session['accountInfo'][1])
+                log = logs.log(description)
+                log.addLogs()
+                flash("Welcome! You've successfully login.","success")
+                return redirect(url_for('dashboard'))
+            else:
+                session['allowForceLogin'] = 1
+                session['forceLoginInfo'] = verificationResult
+                return render_template('otpways.html',accountInfo = verificationResult)
+    else:
+        return redirect(url_for('signin'))
+
+@app.route('/check/account/using/username')
+def checkAccountUsingUsername():
+    usernameOrEmail = request.args.get('usernameOrEmail', 0, type=str)
+    password = request.args.get('password', 0, type=str)
+    
+    account  = accounts.account()
+    data = account.checkAccountWithUsername(usernameOrEmail)
+    checkerData = account.checkAccountWithPassword(usernameOrEmail,password)
+
+    if checkerData!=None:
+        return jsonify(result='valid')
+    elif data!=None and checkerData!=None and data==checkerData:
+        return jsonify(result='valid')
+    elif data!=None and checkerData==None:
+        return jsonify(result='invalidPassword')
+    elif data!=None:
+        return jsonify(result='invalidUsername')   
+    else:
+        return jsonify(result='invalidUsernameOrPassword')  
+    
+     
+@app.route('/force/login',methods=["POST"])
+def forceLogin():
+    if 'allowForceLogin' in session:
+        session['accountInfo'] =  session['forceLoginInfo']
+        session.pop('forceLoginInfo')
+        session.pop('allowForceLogin')
+        description = "{} signed in".format(session['accountInfo'][1])
+        log = logs.log(description)
+        log.addLogs()
+        flash("Welcome! You've successfully login.","success")
+        
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('signin'))
+        
+
+    
    
 @app.route('/dashboard')
 def dashboard():
@@ -180,10 +225,31 @@ def logout():
     return redirect(url_for("signin"))
 
 
-@app.route('/signin/OTP')
-def OTP():
-    return render_template('OTP.html')
+@app.route('/send/otp/via/email/<string:email>',methods=["POST"])
+def sendOTPviaEmail(email):
+    if request.method=="POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        loginCredentials = [username,password]
+        code = contacts.contact()
+        code = code.sendEmailOTP(email)
+        print(code)
+        return render_template('otp.html',code=code,email=email,loginCredentials=loginCredentials)
+    else:
+        return redirect(url_for('signin'))
 
+
+@app.route('/send/otp/via/sms/<string:phoneNumber>',methods=["POST"])
+def sendOTPviaSms(phoneNumber):
+    if request.method=="POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        loginCredentials = [username,password]
+        code = contacts.contact()
+        code = code.sendOTPviaPhoneNumber(phoneNumber)
+        return render_template('otp.html',code=code,phoneNumber=phoneNumber,loginCredentials=loginCredentials)
+    else:
+        return redirect(url_for('signin'))
 
 @app.route('/signup')
 def signup():
@@ -794,7 +860,29 @@ def verifyEmail():
         verification = accounts.account()
         verificationResult = verification.login(username, password)
         session['accountInfo'] = verificationResult
-        return redirect(url_for('renterPrivacy'))
+        if  session['accountInfo'][3] =="R":
+            return redirect(url_for('renterPrivacy'))
+        else:
+            return redirect(url_for('ownerPrivacy'))
+    else:
+        return redirect(url_for("signin"))
+
+    
+@app.route('/unbind/verify/email',methods=["POST"])
+def unbindVerifyEmail():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        email = contacts.contact()
+        email.unbindEmail(session['accountInfo'][8])
+        username = session["accountInfo"][1]
+        password = session["accountInfo"][2]
+        verification = accounts.account()
+        verificationResult = verification.login(username, password)
+        session['accountInfo'] = verificationResult
+        if  session['accountInfo'][3] =="R":
+            return redirect(url_for('renterPrivacy'))
+        else:
+            return redirect(url_for('ownerPrivacy'))
     else:
         return redirect(url_for("signin"))
     
@@ -820,14 +908,34 @@ def sendPhoneNumberVerification():
 def verifyPhoneNumber():
     sessionChecker = loginRequired()
     if sessionChecker==True:
-        email = contacts.contact()
-        email.verifyPhoneNumber(session["accountInfo"][0])
+        phoneNumber = contacts.contact()
+        phoneNumber.verifyPhoneNumber(session["accountInfo"][0])
         username = session["accountInfo"][1]
         password = session["accountInfo"][2]
         verification = accounts.account()
         verificationResult = verification.login(username, password)
         session['accountInfo'] = verificationResult
-        return redirect(url_for('renterPrivacy'))
+        if  session['accountInfo'][3] =="R":
+            return redirect(url_for('renterPrivacy'))
+        else:
+            return redirect(url_for('ownerPrivacy'))
+    return redirect(url_for("signin"))
+
+@app.route('/unbind/verify/phone/number',methods=["POST"])
+def unbindVerifyPhoneNumber():
+    sessionChecker = loginRequired()
+    if sessionChecker==True:
+        phoneNumber = contacts.contact()
+        phoneNumber.unbindPhoneNumber(session["accountInfo"][9])
+        username = session["accountInfo"][1]
+        password = session["accountInfo"][2]
+        verification = accounts.account()
+        verificationResult = verification.login(username, password)
+        session['accountInfo'] = verificationResult
+        if  session['accountInfo'][3] =="R":
+            return redirect(url_for('renterPrivacy'))
+        else:
+            return redirect(url_for('ownerPrivacy'))
     else:
         return redirect(url_for("signin"))
 
@@ -994,19 +1102,6 @@ def adminManagePasswords():
     else:
         return render_template('errorpage.html')  
 
-"""
-@app.route('/manage/passwords', methods=["POST"])
-def managePasswords():
-    if 'adminLogin' in session:
-        if request.method == 'POST':
-            trusted_proxies_and_IP = ['127.0.0.1']
-            if request.remote_addr not in trusted_proxies_and_IP:
-            abort(403)  # Forbidden
-        else:
-
-
-"""
-
 @app.route('/admin/manage/payments')
 def adminManagePayments():
     if 'adminLogin' in session:
@@ -1020,7 +1115,6 @@ def adminManagePayments():
     else:
         return render_template('errorpage.html')  
     
-
 @app.errorhandler(404)
 def not_found(error):
     resp = make_response(render_template('errorpage.html'), 404)
@@ -1064,13 +1158,11 @@ def updatePaymentRecordEmailVerication(userID,bhID):
     else:
         return render_template('errorpage.html')
 
-
 @app.route('/admin/logout')
 def adminLogout():
     session.pop('adminLogin')
     return redirect(url_for('adminLogin'))
     
-
 @app.route('/edit/payments/<int:paymentNo>',methods=['POST'])
 def editPayments(paymentNo):
     trusted_proxies_and_IP = ['127.0.0.1']
@@ -1087,7 +1179,6 @@ def editPayments(paymentNo):
                 return redirect(url_for('adminManagePayments',msg=msg))
     else:
         return render_template('errorpage.html')
-
 
 @app.route('/delete/payments/record/email/verification/<string:userID>/<string:bhID>')
 def deletePaymentRecordEmailVerication(userID,bhID):
@@ -1124,7 +1215,6 @@ def deletePayments(paymentNo):
     else:
         return render_template('errorpage.html')
 
-
 @app.route('/admin/list/of/bh')
 def adminListOfBh():
     if 'adminLogin' in session:
@@ -1132,8 +1222,9 @@ def adminListOfBh():
         if request.remote_addr not in trusted_proxies_and_IP:
             abort(403)  # Forbidden
         else:
-
-            return render_template("adminlistofbh.html")
+            myListOfBh = boardingHouses.boardingHouse()
+            myListOfBh = myListOfBh.ownerAndBoaringHouse()
+            return render_template("adminlistofbh.html",myListOfBh=myListOfBh)
     else:
         return render_template('errorpage.html')
 

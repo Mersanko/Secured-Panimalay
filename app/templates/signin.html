@@ -82,7 +82,7 @@
                                 toggle="#password" class="fa fa-eye field-icon toggle-password"></span>
                                 <div class="invalid-feedback">Please enter valid password!</div>
                             </div>
-                            
+                            <div id="invalidUserNameOrPassword" name="invalidUserNameOrPassword"><small style="color: red;">Invalid username or password</small></div>
                             <hr class="mt-2">
                             <div class="text-left pt-4">
                                 <a href="{{url_for('forgotPassword')}}">Forgot password?</a>
@@ -100,6 +100,34 @@
 </body>
     <!--Toggle script-->
     <script>
+
+        $(document).ready(function(){
+            $("#invalidUserNameOrPassword").hide();
+            {% if usernameOrEmail is defined %}
+            $("#usernameOrEmail").val('{{usernameOrEmail}}');
+            $("#usernameOrEmail").css({'border':'solid red 1px'})
+            $("#password").val('{{password}}');
+            $("#password").css({'border':'solid red 1px'})
+            $("#invalidUserNameOrPassword").show();
+            {%endif %}
+        })
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#usernameOrEmail").on('change',function(){
+                $("#usernameOrEmail").css({'border':'1px solid rgba(255,255,255,0.7)'})
+                $("#password").css({'border':'1px solid rgba(255,255,255,0.7)'})
+                $("#invalidUserNameOrPassword").hide();
+            })
+            $("#password").on('change',function(){
+                $("#usernameOrEmail").css({'border':'1px solid rgba(255,255,255,0.7)'})
+                $("#password").css({'border':'1px solid rgba(255,255,255,0.7)'})
+                $("#invalidUserNameOrPassword").hide();
+            })
+            
+        })
+    </script>
+    <script>    
         $(".toggle-password").click(function () {
 
             $(this).toggleClass("fa-eye fa-eye-slash");
@@ -110,6 +138,7 @@
                 input.attr("type", "password");
             }
         });
+        
     </script>
     <!--Toggle script-->
 </html>

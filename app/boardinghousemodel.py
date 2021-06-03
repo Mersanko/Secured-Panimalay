@@ -23,7 +23,7 @@ class boardingHouse():
     @classmethod
     def searchBoardingHouse(cls,userID):
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM boardingHouses WHERE ownersID=%s",(userID,))
+        cur.execute("SELECT * FROM boardinghouses WHERE ownersID=%s",(userID,))
         bh = cur.fetchone()
         cur.close()
         return bh
@@ -36,4 +36,12 @@ class boardingHouse():
         cur.close()
    
    
-        
+    @classmethod
+    def ownerAndBoaringHouse(cls):
+        cur = mysql.connection.cursor()
+        cur.execute('''SELECT boardinghouses.boardingHouseName,accounts.username FROM boardinghouses
+                    INNER JOIN accounts ON boardingHouses.ownersID=accounts.userID''')
+        bh = cur.fetchall()
+        cur.close()
+        return bh
+          
