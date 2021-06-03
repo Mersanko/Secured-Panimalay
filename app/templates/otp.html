@@ -25,7 +25,7 @@ width: 550px;
 padding: 10px;
 background: white;
 border: none;
-height: 350px;
+height: 280px;
 position: relative
 }
 .gmail-code {
@@ -46,11 +46,11 @@ margin-right: 12px
 
 <div class="d-flex justify-content-center align-items-center container" style="margin-top: 10%;">
     <div class="card py-5 px-5">
-        <h5 class="mb-2">Check your email!</h5><span class="gmail-code">We've sent a six-digit code to <b>{{email}}</b> Enter it below to confirm your email address.</span>
+        <h5 class="mb-2">Please check your email!</h5><span class="gmail-code" style="margin-bottom: 5%">We've sent a six-digit code to <b>{{email}}</b> Enter it below to confirm your email address.</span>
         <form id="forceLoginForm" name="forceLoginForm" action="{{url_for('forceLogin')}}" method="POST">
         <div style="align-content: center;">
-        <input class="input-group" name="providedCode" id="providedCode" type="text" required>
-        <input type="submit" class="btn btn-success" value="Proceed" >
+        <input class="form-control" name="providedCode" id="providedCode" type="text" style="border: 1px solid gray;" required>
+        <input type="submit" class="btn btn-success" value="Proceed" style="margin-top: 5%">
          </div>
         </form>
     </div>

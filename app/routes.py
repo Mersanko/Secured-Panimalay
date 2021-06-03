@@ -374,8 +374,8 @@ def updateUnits(unitID):
             description = "{} updated one of its unit {} info".format(session['accountInfo'][1],unitID)
             log = logs.log(description)
             log.addLogs()
-            
-        return redirect(url_for('manageUnits', userID=userID))
+            msg = flash("Well Done! You've successfully updated a unit.","success")
+        return redirect(url_for('manageUnits',userID=userID,msg=msg))
     else:
         return redirect(url_for("signin"))
 
@@ -391,7 +391,8 @@ def deleteUnit(unitID):
             description = "{} deleted unit {}".format(session['accountInfo'][1],unitID)
             log = logs.log(description)
             log.addLogs()
-        return redirect(url_for('manageUnits', userID=userID))
+            msg = flash("Well Done! You've successfully deleted a unit.","success")
+        return redirect(url_for('manageUnits',userID=userID,msg=msg))
     else:
         return redirect(url_for("signin"))
 
@@ -476,6 +477,7 @@ def changePassword():
             newPassword = request.form.get('newPass')
             account = accounts.account()
             account.changePassword(session['accountInfo'][0],oldPassword, newPassword)
+            session['accountInfo'][2] = newPassword
             description = "{} update its password".format(session['accountInfo'][1])
             log = logs.log(description)
             log.addLogs()
@@ -500,7 +502,14 @@ def managePayment():
 
         ownedUnits = units.unit()
         ownedUnits = ownedUnits.searchOwnedUnits(bhID)
+        renterUsernameAndID = []
+        for payment in paymentRecord:
+            if (payment[1],payment[5]) not in renterUsernameAndID:
+                renterUsernameAndID.append((payment[1],payment[5]))
+      
+        
         return render_template('ownermanagepayments.html',
+                            renterUsernameAndID =renterUsernameAndID,
                             paymentRecord=paymentRecord,
                             accs=accs,
                             ownedUnits=ownedUnits,
@@ -1212,7 +1221,6 @@ def deletePaymentRecordEmailVerication(userID,bhID):
             ownerEmail = ownerCode.findEmailUsingbhID(bhID)
             ownerCode =  ownerCode.sendEmailVerificationCodeForPaymentUpdate(ownerEmail[1])
             return jsonify(result=[renterCode,ownerCode]) 
-            
     else:
         return render_template('errorpage.html')
     
@@ -1225,8 +1233,8 @@ def deletePayments(paymentNo):
         else:
             payment = payments.payment()
             payment.deletePayment(paymentNo)
-            return redirect(url_for('adminManagePayments'))
-            
+            msg = flash("Well Done! You've successfully deleted a payment.","success")
+            return redirect(url_for('adminManagePayments',msg=msg))
     else:
         return render_template('errorpage.html')
 

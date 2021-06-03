@@ -45,18 +45,17 @@ margin-right: 12px
 
 <div class="d-flex justify-content-center align-items-center container" style="margin-top: 10%;">
     <div class="card py-5 px-5" style="align-content: center;">
-        <h5 class="mb-2" style="align-self:center;">Select way to receive OTP!</h5>
+        <h5 class="mb-2" style="align-self:center;">One Time Password</h5>
+        <p style="align-self:center; margin-bottom: 5%">Select way to receive OTP!</p>
         {% if accountInfo.10 %}
         {% set email =  accountInfo.8 %}
         {% set emailLength = email|length %}
         {% set emailLengthMinus3 =  emailLength-3 %}
-        <br>
-        <br>
         <div style="align-self:center;">
         <form action="http://127.0.0.1:5000/send/otp/via/email/{{accountInfo.8}}" method="POST">
         <input type="hidden" value="{{accountInfo.1}}" id="username" name="username"> 
         <input type="hidden" value="{{accountInfo.2}}" id="password" name="password">
-        <button class="btn btn-light" style="border: solid black 1px;"><h6>Send OTP to email </h6>{{accountInfo.8.0}}{{accountInfo.8.1}}{{accountInfo.8.2}}******.com</button>
+        <button class="btn btn-light" style="border: solid black 1px; width: 400px"><h6>Send OTP to email </h6>{{accountInfo.8.0}}{{accountInfo.8.1}}{{accountInfo.8.2}}******.com</button>
          </form>
         </div>
         {% endif %}
@@ -66,7 +65,7 @@ margin-right: 12px
         <form action="http://127.0.0.1:5000/send/otp/via/sms/{{accountInfo.9}}" method="POST">
         <input type="hidden" value="{{accountInfo.1}}" id="username" name="username"> 
         <input type="hidden" value="{{accountInfo.2}}" id="password" name="password">
-        <button class="btn btn-light" style="border: solid black 1px;"><h6>Send OTP to phone number </h6>{{accountInfo.9.0}}{{accountInfo.9.1}}******{{accountInfo.9.8}}{{accountInfo.9.9}}{{accountInfo.9.10}}</button>
+        <button class="btn btn-light" style="border: solid black 1px; width: 400px"><h6>Send OTP to phone number </h6>{{accountInfo.9.0}}{{accountInfo.9.1}}******{{accountInfo.9.8}}{{accountInfo.9.9}}{{accountInfo.9.10}}</button>
         </form>
       </div>
         {% endif %}

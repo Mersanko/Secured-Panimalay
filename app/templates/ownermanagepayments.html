@@ -336,9 +336,26 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for>Renter ID</label>
-						<input type="text" name="renterID" id="renterID" class="form-control" required="1" value="">
+						<label for>Select Renter</label>
+						<select class="form-control" id="inputGroupSelect02" name="renterID" id="renterID">
+							<option disabled selected>Select Renter</option>
+							{% for renter in renterUsernameAndID %}
+							<option value="{{renter.0}}">{{renter.1}} : {{renter.0}}"></option>
+							{% endfor %}
+						</select>
 					</div>
+					<!--<div class="input-group mb-3">
+						<label for="renterID">Select Renter</label>
+						<select class="custom-select" id="inputGroupSelect02" name="renterID" id="renterID">
+							<option disabled selected>Select Renter</option>
+							{% for renter in renterUsernameAndID %}
+							<option value="{{renter.0}}">{{renter.1}} : {{renter.0}}</option>
+							{% endfor %}
+						</select>
+						<div class="input-group-append">
+						  <label class="input-group-text" for="inputGroupSelect02">Options</label>
+						</div>
+					</div>-->
 					<input type="hidden" name="bhID" id="bhID" value="{{bhID}}">
 					<input type="hidden" name="passwordConfirm" id="passwordConfirm" value={{accountInfo.2}}>
 					<div class="form-group">

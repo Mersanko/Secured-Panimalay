@@ -1,5 +1,4 @@
 from app import app, mysql
-
 class payment():
     def __init__(self,userID=None,bhID=None,amount=None,paymentDate=None):
         self.userID = userID    
@@ -16,7 +15,9 @@ class payment():
     @classmethod
     def paymentToBh(cls,bhID):
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM payments WHERE bhID=%s",(bhID,))
+        cur.execute('''SELECT payments.paymentNo,payments.userID,payments.bhID,payments.amount,payments.paymentDate,accounts.username
+                    FROM payments INNER JOIN accounts ON payments.userID = accounts.userID
+                    WHERE bhID=%s''',(bhID,))
         data = cur.fetchall()
         if data!=None:
             cur.close()

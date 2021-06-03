@@ -65,12 +65,13 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="h4 mb-1">Sign in</h2>
+                        <p style="color: gray">No account? Sign up <a href="{{url_for('signup')}}">here.</a></p>
                         <hr>
                         <form action="{{url_for('login')}}" method="POST">
                             <div class="input-group form-group">
                                 <div class="input-group-prepend"><span class="input-group-text"><i
                                             class="fa fa-user fa-lg"></i></span></div>
-                                <input class="form-control" type="text" placeholder="username or email"
+                                <input class="form-control" type="text" placeholder="Enter your username"
                                     id="usernameOrEmail" name="usernameOrEmail" required="1">
                                 <div class="invalid-feedback">Please enter valid username!</div>
                             </div>
@@ -78,18 +79,17 @@
                                 <div class="input-group-prepend"><span class="input-group-text"><i
                                             class="fa fa-lock fa-lg"></i></span></div>
                                 <input class="form-control" type="password" id="password" name="password"
-                                value="" placeholder="Enter New Password" required="1"><span 
+                                value="" placeholder="Enter your password" required="1"><span 
                                 toggle="#password" class="fa fa-eye field-icon toggle-password"></span>
                                 <div class="invalid-feedback">Please enter valid password!</div>
                             </div>
                             <div id="invalidUserNameOrPassword" name="invalidUserNameOrPassword"><small style="color: red;">Invalid username or password</small></div>
                             <hr class="mt-2">
-                            <div class="text-left pt-4">
-                                <a href="{{url_for('forgotPassword')}}">Forgot password?</a>
+                            <div class="text-left">
+                                <p style="margin-top: -2%;"><a href="{{url_for('forgotPassword')}}">Forgot Password?</a></p>
                             </div>
                             <div class="text-right pt-4">
-                                <button class="btn" type="submit" style="background-color: #4A707A; color: white;">Sign
-                                    In</button>
+                                <button class="btn" type="submit" style="background-color: #4A707A; color: white;">Sign In</button>
                             </div>
                         </form>
                     </div>
