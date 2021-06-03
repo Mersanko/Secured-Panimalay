@@ -98,7 +98,14 @@ def forgotPasswordSendCode():
         contact = request.form.get('contact') 
         code = contacts.contact()
         checker = code.checkIfExist(contact,contact)
-        if checker!=None or len(checker)!=0 :
+        print(checker)
+          
+        if checker==None:
+            return render_template('noaccountisdetected.html')
+        elif len(checker)==0:
+            return render_template('noaccountisdetected.html')
+        
+        elif checker!=None:
             if contactType=="email":
                 code = code.sendEmailVerificationCodeForgotPassword(contact)
                 return render_template('forgotpasswordverification.html',code=code,contact=contact)
@@ -106,9 +113,17 @@ def forgotPasswordSendCode():
             else:
                 code = code.smsAlertForgotPassword(contact)
                 return render_template('forgotpasswordverification.html',code=code,contact=contact)
+        elif len(checker)!=0:
+            if contactType=="email":
+                code = code.sendEmailVerificationCodeForgotPassword(contact)
+                return render_template('forgotpasswordverification.html',code=code,contact=contact)
 
-        else:
-            return '<h1>NO ACCOUNT IS DETECTED</h1>'
+            else:
+                code = code.smsAlertForgotPassword(contact)
+                return render_template('forgotpasswordverification.html',code=code,contact=contact)
+            
+  
+        
             
 
 @app.route('/set/new/password/<string:contact>')
@@ -1240,6 +1255,24 @@ def adminListOfUsers():
             return render_template("adminlistofusers.html",myListOfUsers=myListOfUsers)
     else:
         return render_template('errorpage.html')
+
+
+
+    
+@app.errorhandler(405)
+def error405(error):
+    resp = make_response(render_template('405.html'), 405)
+    resp.headers['header'] = 'ERROR'
+    return resp
+
+@app.errorhandler(500)
+def error405(error):
+    resp = make_response(render_template('500.html'), 500)
+    resp.headers['header'] = 'ERROR'
+    return resp
+
+
+
 
 
 '''
