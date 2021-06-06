@@ -271,7 +271,7 @@
 
                             <!--Tab for edit password-->
                             <div class="tab-pane" id="editpassword">
-                                <form action="{{url_for('changePassword')}}" method="POST">
+                                <form id="changePasswordForm" name="changePasswordForm" action="{{url_for('changePassword')}}" method="POST">
                                     <div class="form-group row">
                                         <label class="col-lg-3 col-form-label form-control-label">Current
                                             Password</label>
@@ -311,7 +311,9 @@
     </div>
     <!--Toggle script-->
     <script>
-        $(".toggle-password").click(function () {
+        var accountInfo = {{data|tojson}}
+        console.log(accountInfo);
+        $(".toggle-firstname").click(function () {
 
             $(this).toggleClass("fa-eye fa-eye-slash");
             var input = $($(this).attr("toggle"));
@@ -321,6 +323,15 @@
                 input.attr("type", "password");
             }
         });
+        $("#changePasswordForm").on("submit",function(e){
+            e.preventDefault();
+            if ($("#oldPass").val()!==accountInfo[2]){
+                alert("Invalid Password");
+            }
+            else{
+                e.currentTarget.submit();
+            }
+        })
     </script>
     <!--Toggle script-->
 </body>
