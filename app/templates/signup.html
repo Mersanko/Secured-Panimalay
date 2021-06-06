@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Panimalay</title>
+    <link rel="shortcut icon" type="image/png" href="{{url_for('static',filename='panimalay-196x196.png')}}">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>
+          
+        $(function() {
+        $('a#verifyUsername').bind('click', function() {
+          $.getJSON('/username/credentials/uniqueness/test', {
+            username: $('input[name="username"]').val(),
+          }, function(data) {
+            var verifyUsernameResult = data.result;
+            if (verifyUsernameResult==="Taken"){
+                $("#usernameTaken").show();
+                $("#username").css({"border-color":"red"});
+            }
+            else{
+            $("#usernameTaken").hide();
+            $("#username").css({"border-color":"gray"});
+            }
+            
+          });
+          return false;
+        });
+      });
+     
+    </script>
+      <script>
+          
+        $(function() {
+        $('a#verifyPhoneNumber').bind('click', function() {
+          $.getJSON('/phoneNumber/credentials/uniqueness/test', {
+            phoneNumber: $('input[name="phoneNumber"]').val(),
+          }, function(data) {
+            var verifyPhoneNumberResult = data.result;
+            if (verifyPhoneNumberResult==="Taken"){
+                $("#phoneNumberTaken").show();
+                $("#phoneNumber").css({"border-color":"red"});
+            }
+            else{
+            $("#phoneNumberTaken").hide();
+            $("#phoneNumber").css({"border-color":"gray"});
+            }
+          });
+          return false;
+        });
+      });
+     
+    </script>
+
+<script>
+          
+    $(function() {
+    $('a#verifyEmail').bind('click', function() {
+      $.getJSON('/email/credentials/uniqueness/test', {
+        email: $('input[name="email"]').val(),
+      }, function(data) {
+        var verifyEmailResult = data.result;
+        if (verifyEmailResult==="Taken"){
+            $("#emailTaken").show();
+             $("#email").css({"border-color":"red"});
+        }
+        else{
+        $("#emailTaken").hide();
+        $("#email").css({"border-color":"gray"});
+        }
+      });
+      return false;
+    });
+  });
+ 
+</script>
+</head>
+
+<!--CSS-->
+<style>
+body {
+    background-image: url("{{url_for('static', filename = 'signupbg.jpg')}}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
+
+.form-control {
+    border: 1px solid #e1e1e1;
+}
+.field-icon {
+float: right;
+margin-top: -25px;
+margin-right: 2%;
+}
+</style>
+<body>
+
+<header>
+    <nav class="navbar" style="height: 50px;">
+        <ul>
+            <li><a class="navbar-brand" href="/"
+                    style="color: white;font-size:20; font-family: Arial, Helvetica, sans-serif;"><strong>
+                        <h2><img src="{{url_for('static', filename = 'panimalay-114x114.png')}}">P A N I M A L A Y</h2>
+                    </strong></a></li>
+        </ul>
+    </nav>
+</header>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+<div class="container pb-5 mb-sm-5" style="margin-top: 100px;">
+    <div class="row pt-5 justify-content-center">
+        <div class="col-md-6 pt-5 pt-sm-3" style="background-color: white; margin-top: 15px; border-radius: 3px;">
+            <h2 class="h4 mb-3">Already have an account? <a href="signin">Login</a></h2>
+            <form name="signUpForm" id="signUpForm" action="{{url_for('createAccount')}}" method='POST'>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-fn">First Name</label>
+                            <input class="form-control" type="text" required="" id="reg-fn" name="reg-fn">
+                            <div class="invalid-feedback">Please enter your first name!</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-ln">Last Name</label>
+                            <input class="form-control" type="text" required="" id="reg-ln" name="reg-ln">
+                            <div class="invalid-feedback">Please enter your last name!</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-gender">Gender</label>
+                            <select class="custom-select mr-sm-2" id="reg-gender" name="reg-gender">
+                                <option disabled selected>Select gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-accountType">Account Type</label>
+                            <select class="custom-select mr-sm-2" id="reg-accountType" name="reg-accountType">
+                                <option disabled selected>Select account type</option>
+                                <option value="R">Renter</option>
+                                <option value="O">Owner</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-username">Username</label>
+                            <input class="form-control" type="username" required="" id="username"
+                                name="username" maxlength="30">
+                             <a href=# id=verifyUsername hidden></a>
+                           <small id="usernameTaken" class="text-danger"> Username already taken.</small>
+                           <small id="usernameInvalid" class="text-danger"> Invalid Username.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="reg-birthdate">Birthdate</label>
+                        <input type="date" id="reg-birthdate" name="reg-birthdate" class="form-control"
+                            placeholder="Enter birthdate" max="2001-12-31" required="1">
+                    </div>
+                   
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input class="form-control" type="text" required="" id="phoneNumber" name="phoneNumber" maxlength="11">
+                            <a href=# id=verifyPhoneNumber hidden></a>
+                            <small id="phoneNumberTaken" class="text-danger"> Phone number already taken.</small>
+                            <small id="phoneNumberInvalid" class="text-danger"> Invalid phone number.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="email">E-mail Address</label>
+                            <input class="form-control" type="email" required="" id="email" name="email">
+                            <a href=# id=verifyEmail maxlength="45" hidden></a>
+                            <small id="emailTaken" class="text-danger"> Email already taken.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <input class="form-control" type="password" required="" id="reg-password"
+                                name="reg-password" autocomplete="new-password"><span toggle="#reg-password" class="fa fa-eye field-icon toggle-firstname"></span>
+                            <div class="invalid-feedback">Please enter password!</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="reg-password-confirm">Confirm Password</label>
+                            <input class="form-control" type="password" required="" id="reg-password-confirm"><span toggle="#reg-password-confirm" class="fa fa-eye field-icon toggle-firstname"></span>
+                            <div class="invalid-feedback">Passwords do not match!</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between">
+                    <div class="custom-control custom-checkbox" style="margin-bottom: 30px;">
+                        <input class="custom-control-input" type="checkbox" checked="" id="terms">
+                        <label class="custom-control-label" for="terms">I have read and agreed to the <a href="">Terms
+                                and Service</a></label>
+                    </div>
+                </div>
+            
+                <div class="text-right">
+                    <a href="#" name="signUpButton" id="signUpButton"></a><button class="btn" 
+                        style="background-color: #4A707A; color: white; margin-bottom: 20px;">Sign
+                        Up</button></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>    
+
+</div>
+</body>
+<!--See pa-->
+<script>
+$(".toggle-firstname").click(function() {
+
+$(this).toggleClass("fa-eye fa-eye-slash");
+var input = $($(this).attr("toggle"));
+if (input.attr("type") == "password") {
+  input.attr("type", "text");
+} else {
+  input.attr("type", "password");
+}
+});
+</script>
+<!--End of see password script-->
+
+<script>
+    $(document).ready(function(){
+        $("#usernameTaken").hide();
+        $("#emailTaken").hide();
+        $("#phoneNumberTaken").hide();
+        $("#usernameInvalid").hide();
+        $("#phoneNumberInvalid").hide();
+
+
+        $("#username").on("change",function(){
+            $("#verifyUsername").click();
+        })
+        $("#email").on("change",function(){
+            $("#verifyEmail").click();
+        })
+        $("#phoneNumber").on("change",function(){
+            $("#verifyPhoneNumber").click();
+        })
+       
+        $("#username").on("focusout",function(){
+            if ($("#usernameTaken").is(':visible')===true){
+                $("#username").css({"border-color":"red"});
+                $("#usernameInvalid").hide()
+            }
+           else{
+                $("#username").css({"border-color":"rgba(0,0,0,0.1)"});
+                
+           }
+        })
+        $("#email").on("focusout",function(){
+            if ($("#emailTaken").is(':visible')===true){
+                $("#email").css({"border-color":"red"});
+            }
+           else{
+                $("#email").css({"border-color":"rgba(0,0,0,0.1)"});
+           }
+        })
+        $("#phoneNumber").on("focusout",function(){
+            if ($("#phoneNumberTaken").is(':visible')===true){
+                $("#phoneNumber").css({"border-color":"red"});
+                $("#phoneNumberInvalid").hide()
+            }
+            else if(($("#phoneNumber").val()).length===0){
+                $("#phoneNumber").css({"border-color":"rgba(0,0,0,0.1)"});
+            }
+         
+        })
+        $("#username").on("change",function(){
+            $("#usernameTaken").hide();
+            $("#usernameInvalid").hide()
+            if ((($("#username").val()).length<8) && (($("#username").val()).length!==0)){
+            $("#usernameInvalid").show()
+            $("#usernameTaken").hide()
+            }
+            else{
+                $("#usernameInvalid").hide()
+            }
+        })
+        $("#phoneNumber").on("change",function(){
+            var phoneNumber = $("#phoneNumber").val();
+            var phoneNumberLength = phoneNumber.length;
+            $("#phoneNumberTaken").hide();
+            $("#phoneNumberInvalid").hide();
+
+            
+            if ((phoneNumberLength<11) && (phoneNumberLength>0)){
+                $("#phoneNumberInvalid").show();
+            }
+            else if(isNaN(phoneNumber)){
+                $("#phoneNumberInvalid").show();    
+            }
+            else if(phoneNumberLength===0){
+                $("#phoneNumberTaken").hide();
+                 $("#phoneNumberInvalid").hide();
+            }
+            else if ($("#phoneNumber").css("border-color")==="rgba(0,0,0,0.1)"){
+                $("#phoneNumberTaken").hide();
+                $("#phoneNumberInvalid").hide();
+            }
+           
+        })
+
+
+        if ($("#usernameInvalid").is(":visible")===true){
+            $("#username").css({"border-color":"red"});
+        }
+        else{
+            $("#username").css({"border-color":"rgba(0,0,0,0.1)"});
+        }
+
+        if ($("#phoneNumberInvalid").is(":visible")===true){
+            $("#phoneNumber").css({"border-color":"red"});
+        }
+        else{
+            $("#phoneNumber").css({"border-color":"rgba(0,0,0,0.1)"});
+        
+        }
+
+
+        if ($("#usernameInvalid").is(":visible")===true){
+            $("#username").css({"border-color":"red"});
+        }
+        if ($("#phoneNumberInvalid").is(":visible")===true){
+            $("#phoneNumber").css({"border-color":"red"});
+         }
+        
+        $("phoneNumber").on("focusout",function(){
+            if(($("#phoneNumber").val()).length===0){
+                $("#phoneNumberInvalid").hide()
+                $("#phoneNumberTaken").hide()
+            }
+        })
+        $("username").on("focusout",function(){
+            if(($("#username").val()).length===0){
+                $("#usernameInvalid").hide()
+                $("#usernameTaken").hide()
+            }
+        })
+        
+        $("email").on("focusout",function(){
+            
+        if(($("#email").val()).length===0){
+            $("#emailTaken").hide()
+          
+        }
+        })
+        if ($("#phoneNumber").css("border-color")==="rgba(0,0,0,0.1)"){
+                $("#phoneNumberTaken").hide()
+                $("#phoneNumberInvalid").hide()
+            }
+        
+        $("#signUpForm").on("submit",function(e){
+            e.preventDefault();
+            if ($("#usernameTaken").is(":visible") || $("#usernameInvalid").is(":visible")){
+                $("#username").focus();
+            }
+            else if ($("#phoneNumberTaken").is(":visible") || $("#phoneNumberInvalid").is(":visible")){
+                $("#phoneNumber").focus();
+            }
+            else if ($("#emailTaken").is(":visible")){
+                $("#email").focus();
+            }
+            else{
+                e.currentTarget.submit();
+            }
+        });
+    });
+
+
+</script>
+</html>
